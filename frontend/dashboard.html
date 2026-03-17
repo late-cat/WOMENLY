@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Dashboard — Womenly</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand">🌸 WOMENLY <span>AI Health Assistant</span></a>
+      <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="calculator.html">Cycle Calculator</a></li>
+        <li><a href="screening.html">PCOS Screening</a></li>
+        <li><a href="dashboard.html" class="active">Dashboard</a></li>
+        <li><a href="metrics.html">Model Info</a></li>
+      </ul>
+      <div class="nav-user" id="navUser" style="display: none;">
+        <span class="user-tag" id="userName"></span>
+        <button class="btn-logout" onclick="logOut()">Logout</button>
+      </div>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>📊 Health Dashboard</h1>
+      <p>Your monthly records and health profile</p>
+    </div>
+
+    <!-- Auth gate -->
+    <div id="authGate" class="card" style="text-align: center; padding: 40px;">
+      <div class="emoji" style="font-size: 2rem;">🔒</div>
+      <p style="margin: 12px 0;">Please <a href="login.html">log in</a> to view your dashboard.</p>
+    </div>
+
+    <!-- Dashboard content (hidden until logged in) -->
+    <div id="dashContent" style="display: none;">
+
+      <!-- Profile Risk Tag -->
+      <div class="card section" id="profileTagSection">
+        <h3 class="section-title">Your Profile Risk Tag</h3>
+        <div id="profileTag">
+          <div class="empty-state">
+            <p>Complete at least 2 monthly screenings to get your profile-level risk tag.</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div style="display: flex; gap: 12px; margin-bottom: 24px; flex-wrap: wrap;">
+        <a href="screening.html" class="btn btn-primary">🔬 New Monthly Screening</a>
+        <a href="calculator.html" class="btn btn-secondary">📅 Cycle Calculator</a>
+      </div>
+
+      <!-- Monthly Records -->
+      <div class="card section">
+        <h3 class="section-title">Monthly Records</h3>
+        <div id="recordsList">
+          <div class="empty-state">
+            <div class="emoji">📋</div>
+            <p>No records yet. Take your first <a href="screening.html">screening</a>.</p>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <footer class="footer">© <span id="year"></span> Womenly</footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/dashboard.js"></script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
