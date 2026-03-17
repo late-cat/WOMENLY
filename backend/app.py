@@ -1,3 +1,8 @@
+"""
+Womenly — FastAPI Backend
+Dual-mode PCOS prediction: Basic (symptoms) + Advanced (symptoms + blood tests)
+"""
+
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel
@@ -20,7 +25,7 @@ app.add_middleware(
 
 MODEL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model")
 
-
+# Models and metrics loaded at startup
 model_basic = None
 model_advanced = None
 metrics_data = None
@@ -52,11 +57,14 @@ def load_models():
         print("✅ Metrics loaded")
 
 
+# ─── Request Models ──────────────────────────────────────
 class BasicInput(BaseModel):
     age: float
     bmi: float
     cycle_length: float
-    cycle_regularity: int = 0  # 0=regular, 1=irregular
+    cycle_regularity: int = 0  # from advanced form
+    irregular_periods: int = 0  # from basic screening form (alias)
+    period_duration: int = 0  # received but not used in model
     weight_gain: int = 0
     hair_growth: int = 0
     skin_darkening: int = 0
@@ -67,7 +75,7 @@ class BasicInput(BaseModel):
 
 
 class AdvancedInput(BaseModel):
-
+    # Basic fields
     age: float
     bmi: float
     cycle_length: float
@@ -79,7 +87,7 @@ class AdvancedInput(BaseModel):
     pimples: int = 0
     fast_food: int = 0
     exercise: int = 0
-    # blood test
+    # Blood test fields
     fsh: float
     lh: float
     amh: float
@@ -95,7 +103,7 @@ class PredictionResponse(BaseModel):
     mode: str
 
 
-# doctor recommendations based on risk level
+# ─── Doctor Recommendations ──────────────────────────────
 DOCTOR_REC = {
     "green": (
         "Your indicators look healthy. Continue maintaining a balanced "
@@ -122,9 +130,7 @@ def get_risk(score):
         return "high", "red"
 
 
-# endpoints
-
-
+# ─── Endpoints ───────────────────────────────────────────
 @app.get("/")
 def root():
     return {"status": "ok", "message": "Womenly API is running"}
@@ -135,13 +141,16 @@ def predict_basic(data: BasicInput):
     if model_basic is None:
         raise HTTPException(503, "Basic model not loaded. Run train_model.py first.")
 
+    # Support both field names from different form versions
+    regularity = data.cycle_regularity or data.irregular_periods
+
     features = np.array(
         [
             [
                 data.age,
                 data.bmi,
                 data.cycle_length,
-                data.cycle_regularity,
+                regularity,
                 data.weight_gain,
                 data.hair_growth,
                 data.skin_darkening,
@@ -221,3 +230,9 @@ def health_check():
         "advanced_model": model_advanced is not None,
         "metrics": metrics_data is not None,
     }
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
