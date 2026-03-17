@@ -7,6 +7,18 @@ Womenly is a web-based women's health assistant focused on menstrual awareness, 
 
 The project also includes Firebase-based authentication and a personal dashboard where users can store monthly screening records and observe longer-term health trends.
 
+## UI Preview
+
+### Home Experience
+
+![Womenly Home Page](docs/screenshots/womenly-home.png)
+
+### Cycle Calculator Experience
+
+![Womenly Cycle Calculator](docs/screenshots/womenly-cycle-calculator.png)
+
+These screens show the practical user journey from awareness-first navigation to actionable cycle insights.
+
 
 
 ## Why Womenly Matters
