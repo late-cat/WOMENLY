@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Model Metrics — Womenly</title>
+  <meta name="description" content="View the performance metrics of our AI prediction model for PCOS risk screening.">
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand">🌸 WOMENLY <span>AI Health Assistant</span></a>
+      <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="calculator.html">Cycle Calculator</a></li>
+        <li><a href="screening.html">PCOS Screening</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="metrics.html" class="active">Model Info</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>🧠 Model Metrics</h1>
+      <p>Performance evaluation of our PCOS risk prediction model</p>
+    </div>
+
+    <!-- Summary Metrics -->
+    <div class="metric-grid" id="metricGrid">
+      <div class="metric-card">
+        <div class="metric-value" id="metricAccuracy">—</div>
+        <div class="metric-label">Accuracy</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="metricPrecision">—</div>
+        <div class="metric-label">Precision</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="metricRecall">—</div>
+        <div class="metric-label">Recall</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="metricF1">—</div>
+        <div class="metric-label">F1 Score</div>
+      </div>
+    </div>
+
+    <!-- Confusion Matrix -->
+    <div class="card section">
+      <h3 class="section-title">Confusion Matrix</h3>
+      <div style="overflow-x: auto;">
+        <table class="confusion-matrix" id="confusionMatrix">
+          <thead>
+            <tr><th></th><th>Predicted: No PCOS</th><th>Predicted: PCOS</th></tr>
+          </thead>
+          <tbody>
+            <tr><th>Actual: No PCOS</th><td id="cm_tn">—</td><td id="cm_fp">—</td></tr>
+            <tr><th>Actual: PCOS</th><td id="cm_fn">—</td><td id="cm_tp">—</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Feature Importance Chart -->
+    <div class="card section">
+      <h3 class="section-title">Feature Importance</h3>
+      <p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 12px;">
+        Which health factors have the most influence on the model's predictions.
+      </p>
+      <canvas id="featureChart" height="280"></canvas>
+    </div>
+
+    <!-- Model Info -->
+    <div class="card section" style="font-size: 0.85rem; color: var(--text-light);">
+      <h3 class="section-title">About the Model</h3>
+      <ul style="padding-left: 18px; line-height: 2;">
+        <li><strong>Algorithm:</strong> Random Forest Classifier</li>
+        <li><strong>Library:</strong> scikit-learn</li>
+        <li><strong>Dataset:</strong> PCOS dataset (user-provided)</li>
+        <li><strong>Training:</strong> 80/20 train-test split</li>
+        <li><strong>Purpose:</strong> Screening indicator only — not a clinical diagnostic tool</li>
+      </ul>
+    </div>
+  </div>
+
+  <footer class="footer">© <span id="year"></span> Womenly</footer>
+
+  <script src="js/config.js"></script>
+  <script src="js/metrics.js"></script>
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
+</body>
+</html>
