@@ -40,6 +40,7 @@ async function submitScreening() {
     if (!resp.ok) throw new Error('Server error');
 
     var result = await resp.json();
+    // Store result + input data in sessionStorage for the results page
     sessionStorage.setItem('screening_result', JSON.stringify(result));
     sessionStorage.setItem('screening_input', JSON.stringify(data));
     window.location.href = 'results.html';

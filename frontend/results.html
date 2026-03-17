@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Risk Results — Womenly</title>
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
   <nav class="navbar">
@@ -39,10 +42,11 @@
       </div>
     </div>
 
-    <!-- Save to profile (logged-in users) -->
+
     <div id="saveSection" style="display: none; text-align: center; margin-top: 16px;">
       <button class="btn btn-secondary" onclick="saveToProfile()">💾 Save to My Records</button>
-      <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 6px;">Log in to save this record to your monthly history</p>
+      <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 6px;">Log in to save this record to your
+        monthly history</p>
     </div>
 
     <div style="text-align: center; margin-top: 20px;">
@@ -51,7 +55,8 @@
 
     <div class="disclaimer">
       <span class="disclaimer-icon">⚠️</span>
-      <span>This is a screening indicator, NOT a medical diagnosis. Please consult a gynecologist or endocrinologist for a proper clinical evaluation.</span>
+      <span>This is a screening indicator, NOT a medical diagnosis. Please consult a gynecologist or endocrinologist for
+        a proper clinical evaluation.</span>
     </div>
   </div>
 
@@ -116,7 +121,7 @@
       document.getElementById('resultContent').innerHTML = html;
 
       // Show save button if logged in
-      auth.onAuthStateChanged(function(user) {
+      auth.onAuthStateChanged(function (user) {
         if (user) {
           document.getElementById('saveSection').style.display = 'block';
         }
@@ -148,4 +153,5 @@
     renderResult();
   </script>
 </body>
+
 </html>

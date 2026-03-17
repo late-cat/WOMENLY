@@ -1,31 +1,77 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>PCOS Screening — Womenly</title>
-  <meta name="description" content="AI-powered PCOS risk screening. Answer health questions or upload blood test values for a personalized risk assessment.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <meta name="description"
+    content="AI-powered PCOS risk screening. Answer health questions or upload blood test values for a personalized risk assessment.">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link rel="stylesheet" href="css/style.css">
   <style>
-    .tab-bar { display: flex; gap: 0; margin-bottom: 24px; border-bottom: 2px solid var(--border); }
+    .tab-bar {
+      display: flex;
+      gap: 0;
+      margin-bottom: 24px;
+      border-bottom: 2px solid var(--border);
+    }
+
     .tab-btn {
-      flex: 1; padding: 12px; background: none; border: none; border-bottom: 2px solid transparent;
-      font-family: inherit; font-size: 0.9rem; font-weight: 500; cursor: pointer;
-      color: var(--text-light); margin-bottom: -2px; transition: all 0.2s;
+      flex: 1;
+      padding: 12px;
+      background: none;
+      border: none;
+      border-bottom: 2px solid transparent;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 500;
+      cursor: pointer;
+      color: var(--text-light);
+      margin-bottom: -2px;
+      transition: all 0.2s;
     }
-    .tab-btn.active { color: var(--pink-600); border-bottom-color: var(--pink-500); font-weight: 600; }
-    .tab-btn:hover:not(.active) { color: var(--text); }
-    .tab-content { display: none; }
-    .tab-content.active { display: block; }
+
+    .tab-btn.active {
+      color: var(--pink-600);
+      border-bottom-color: var(--pink-500);
+      font-weight: 600;
+    }
+
+    .tab-btn:hover:not(.active) {
+      color: var(--text);
+    }
+
+    .tab-content {
+      display: none;
+    }
+
+    .tab-content.active {
+      display: block;
+    }
+
     .mode-badge {
-      display: inline-block; font-size: 0.7rem; padding: 2px 8px; border-radius: 10px;
-      margin-left: 6px; font-weight: 600;
+      display: inline-block;
+      font-size: 0.7rem;
+      padding: 2px 8px;
+      border-radius: 10px;
+      margin-left: 6px;
+      font-weight: 600;
     }
-    .mode-badge.basic { background: var(--green-bg); color: #065f46; }
-    .mode-badge.advanced { background: var(--pink-100); color: var(--pink-700); }
+
+    .mode-badge.basic {
+      background: var(--green-bg);
+      color: #065f46;
+    }
+
+    .mode-badge.advanced {
+      background: var(--pink-100);
+      color: var(--pink-700);
+    }
   </style>
 </head>
+
 <body>
 
   <nav class="navbar">
@@ -51,7 +97,7 @@
 
     <div class="card" style="max-width: 620px; margin: 0 auto;">
 
-      <!-- Mode Tabs -->
+
       <div class="tab-bar">
         <button class="tab-btn active" onclick="switchTab('basic')">
           🩺 Basic Screening <span class="mode-badge basic">Easy</span>
@@ -63,7 +109,7 @@
 
       <form id="screeningForm" onsubmit="event.preventDefault(); submitScreening();">
 
-        <!-- Common Fields -->
+
         <div class="section-title">Basic Information</div>
 
         <div class="form-row">
@@ -73,18 +119,22 @@
           </div>
           <div class="form-group">
             <label for="weight">Weight (kg)</label>
-            <input type="number" id="weight" step="0.1" min="20" max="200" required placeholder="e.g. 60" oninput="calcBMI()">
+            <input type="number" id="weight" step="0.1" min="20" max="200" required placeholder="e.g. 60"
+              oninput="calcBMI()">
           </div>
         </div>
 
         <div class="form-row">
           <div class="form-group">
             <label for="height">Height (cm)</label>
-            <input type="number" id="height" step="0.1" min="100" max="220" required placeholder="e.g. 162" oninput="calcBMI()">
+            <input type="number" id="height" step="0.1" min="100" max="220" required placeholder="e.g. 162"
+              oninput="calcBMI()">
           </div>
           <div class="form-group">
             <label>Your BMI</label>
-            <div id="bmiDisplay" style="padding: 10px 14px; background: var(--pink-50); border-radius: 8px; font-weight: 600; color: var(--pink-600); font-size: 1rem;">—</div>
+            <div id="bmiDisplay"
+              style="padding: 10px 14px; background: var(--pink-50); border-radius: 8px; font-weight: 600; color: var(--pink-600); font-size: 1rem;">
+              —</div>
             <div class="form-hint">Auto-calculated from weight &amp; height</div>
           </div>
         </div>
@@ -97,8 +147,10 @@
           <div class="form-group">
             <label>Cycle Regularity</label>
             <div class="toggle-group">
-              <button type="button" class="toggle-btn selected" data-field="cycle_regularity" data-value="0" onclick="toggleSelect(this)">Regular</button>
-              <button type="button" class="toggle-btn" data-field="cycle_regularity" data-value="1" onclick="toggleSelect(this)">Irregular</button>
+              <button type="button" class="toggle-btn selected" data-field="cycle_regularity" data-value="0"
+                onclick="toggleSelect(this)">Regular</button>
+              <button type="button" class="toggle-btn" data-field="cycle_regularity" data-value="1"
+                onclick="toggleSelect(this)">Irregular</button>
             </div>
           </div>
         </div>
@@ -108,56 +160,70 @@
         <div class="form-group">
           <label>Weight Gain?</label>
           <div class="toggle-group">
-            <button type="button" class="toggle-btn" data-field="weight_gain" data-value="1" onclick="toggleSelect(this)">Yes</button>
-            <button type="button" class="toggle-btn selected" data-field="weight_gain" data-value="0" onclick="toggleSelect(this)">No</button>
+            <button type="button" class="toggle-btn" data-field="weight_gain" data-value="1"
+              onclick="toggleSelect(this)">Yes</button>
+            <button type="button" class="toggle-btn selected" data-field="weight_gain" data-value="0"
+              onclick="toggleSelect(this)">No</button>
           </div>
         </div>
 
         <div class="form-group">
           <label>Excess Hair Growth?</label>
           <div class="toggle-group">
-            <button type="button" class="toggle-btn" data-field="hair_growth" data-value="1" onclick="toggleSelect(this)">Yes</button>
-            <button type="button" class="toggle-btn selected" data-field="hair_growth" data-value="0" onclick="toggleSelect(this)">No</button>
+            <button type="button" class="toggle-btn" data-field="hair_growth" data-value="1"
+              onclick="toggleSelect(this)">Yes</button>
+            <button type="button" class="toggle-btn selected" data-field="hair_growth" data-value="0"
+              onclick="toggleSelect(this)">No</button>
           </div>
         </div>
 
         <div class="form-group">
           <label>Skin Darkening?</label>
           <div class="toggle-group">
-            <button type="button" class="toggle-btn" data-field="skin_darkening" data-value="1" onclick="toggleSelect(this)">Yes</button>
-            <button type="button" class="toggle-btn selected" data-field="skin_darkening" data-value="0" onclick="toggleSelect(this)">No</button>
+            <button type="button" class="toggle-btn" data-field="skin_darkening" data-value="1"
+              onclick="toggleSelect(this)">Yes</button>
+            <button type="button" class="toggle-btn selected" data-field="skin_darkening" data-value="0"
+              onclick="toggleSelect(this)">No</button>
           </div>
         </div>
 
         <div class="form-group">
           <label>Hair Loss / Thinning?</label>
           <div class="toggle-group">
-            <button type="button" class="toggle-btn" data-field="hair_loss" data-value="1" onclick="toggleSelect(this)">Yes</button>
-            <button type="button" class="toggle-btn selected" data-field="hair_loss" data-value="0" onclick="toggleSelect(this)">No</button>
+            <button type="button" class="toggle-btn" data-field="hair_loss" data-value="1"
+              onclick="toggleSelect(this)">Yes</button>
+            <button type="button" class="toggle-btn selected" data-field="hair_loss" data-value="0"
+              onclick="toggleSelect(this)">No</button>
           </div>
         </div>
 
         <div class="form-group">
           <label>Frequent Pimples / Acne?</label>
           <div class="toggle-group">
-            <button type="button" class="toggle-btn" data-field="pimples" data-value="1" onclick="toggleSelect(this)">Yes</button>
-            <button type="button" class="toggle-btn selected" data-field="pimples" data-value="0" onclick="toggleSelect(this)">No</button>
+            <button type="button" class="toggle-btn" data-field="pimples" data-value="1"
+              onclick="toggleSelect(this)">Yes</button>
+            <button type="button" class="toggle-btn selected" data-field="pimples" data-value="0"
+              onclick="toggleSelect(this)">No</button>
           </div>
         </div>
 
         <div class="form-group">
           <label>Fast Food Consumption?</label>
           <div class="toggle-group">
-            <button type="button" class="toggle-btn" data-field="fast_food" data-value="1" onclick="toggleSelect(this)">Frequently</button>
-            <button type="button" class="toggle-btn selected" data-field="fast_food" data-value="0" onclick="toggleSelect(this)">Rarely</button>
+            <button type="button" class="toggle-btn" data-field="fast_food" data-value="1"
+              onclick="toggleSelect(this)">Frequently</button>
+            <button type="button" class="toggle-btn selected" data-field="fast_food" data-value="0"
+              onclick="toggleSelect(this)">Rarely</button>
           </div>
         </div>
 
         <div class="form-group">
           <label>Regular Exercise?</label>
           <div class="toggle-group">
-            <button type="button" class="toggle-btn" data-field="exercise" data-value="1" onclick="toggleSelect(this)">Yes</button>
-            <button type="button" class="toggle-btn selected" data-field="exercise" data-value="0" onclick="toggleSelect(this)">No</button>
+            <button type="button" class="toggle-btn" data-field="exercise" data-value="1"
+              onclick="toggleSelect(this)">Yes</button>
+            <button type="button" class="toggle-btn selected" data-field="exercise" data-value="0"
+              onclick="toggleSelect(this)">No</button>
           </div>
         </div>
 
@@ -228,12 +294,12 @@
 
       // Make blood test fields required only in advanced mode
       var advInputs = document.querySelectorAll('#advancedFields input');
-      advInputs.forEach(function(inp) { inp.required = (mode === 'advanced'); });
+      advInputs.forEach(function (inp) { inp.required = (mode === 'advanced'); });
     }
 
     function toggleSelect(btn) {
       var group = btn.parentElement;
-      group.querySelectorAll('.toggle-btn').forEach(function(b) { b.classList.remove('selected'); });
+      group.querySelectorAll('.toggle-btn').forEach(function (b) { b.classList.remove('selected'); });
       btn.classList.add('selected');
     }
 
@@ -321,4 +387,5 @@
     document.getElementById('year').textContent = new Date().getFullYear();
   </script>
 </body>
+
 </html>
