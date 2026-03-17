@@ -1,0 +1,163 @@
+{
+  "basic": {
+    "accuracy": 0.99,
+    "precision": 0.9683,
+    "recall": 1.0,
+    "f1": 0.9839,
+    "confusion_matrix": [
+      [
+        274,
+        4
+      ],
+      [
+        0,
+        122
+      ]
+    ],
+    "feature_importance": {
+      "age": 0.1601,
+      "bmi": 0.1518,
+      "cycle_length": 0.1089,
+      "cycle_regularity": 0.0625,
+      "weight_gain": 0.079,
+      "hair_growth": 0.1259,
+      "skin_darkening": 0.133,
+      "hair_loss": 0.0324,
+      "pimples": 0.0451,
+      "fast_food": 0.0661,
+      "exercise": 0.0353
+    },
+    "features": [
+      "age",
+      "bmi",
+      "cycle_length",
+      "cycle_regularity",
+      "weight_gain",
+      "hair_growth",
+      "skin_darkening",
+      "hair_loss",
+      "pimples",
+      "fast_food",
+      "exercise"
+    ],
+    "medians": {
+      "age": 31.0,
+      "bmi": 24.185058839920735,
+      "cycle_length": 5.0,
+      "cycle_regularity": 1.0,
+      "weight_gain": 0.0,
+      "hair_growth": 0.0,
+      "skin_darkening": 0.0,
+      "hair_loss": 0.0,
+      "pimples": 0.0,
+      "fast_food": 1.0,
+      "exercise": 0.0
+    },
+    "train_samples": 1600,
+    "test_samples": 400
+  },
+  "advanced": {
+    "accuracy": 0.9925,
+    "precision": 0.9917,
+    "recall": 0.9836,
+    "f1": 0.9877,
+    "confusion_matrix": [
+      [
+        277,
+        1
+      ],
+      [
+        2,
+        120
+      ]
+    ],
+    "feature_importance": {
+      "age": 0.063,
+      "bmi": 0.0519,
+      "cycle_length": 0.0593,
+      "cycle_regularity": 0.0583,
+      "weight_gain": 0.0646,
+      "hair_growth": 0.1142,
+      "skin_darkening": 0.1038,
+      "hair_loss": 0.0144,
+      "pimples": 0.0256,
+      "fast_food": 0.049,
+      "exercise": 0.0142,
+      "fsh": 0.0728,
+      "lh": 0.078,
+      "amh": 0.1151,
+      "tsh": 0.0657,
+      "hemoglobin": 0.0502
+    },
+    "features": [
+      "age",
+      "bmi",
+      "cycle_length",
+      "cycle_regularity",
+      "weight_gain",
+      "hair_growth",
+      "skin_darkening",
+      "hair_loss",
+      "pimples",
+      "fast_food",
+      "exercise",
+      "fsh",
+      "lh",
+      "amh",
+      "tsh",
+      "hemoglobin"
+    ],
+    "medians": {
+      "age": 31.0,
+      "bmi": 24.22012751046038,
+      "cycle_length": 5.0,
+      "cycle_regularity": 1.0,
+      "weight_gain": 0.0,
+      "hair_growth": 0.0,
+      "skin_darkening": 0.0,
+      "hair_loss": 0.0,
+      "pimples": 0.0,
+      "fast_food": 1.0,
+      "exercise": 0.0,
+      "fsh": 4.86,
+      "lh": 2.34,
+      "amh": 4.0,
+      "tsh": 2.31,
+      "hemoglobin": 11.0
+    },
+    "train_samples": 1597,
+    "test_samples": 400
+  },
+  "accuracy": 0.9925,
+  "precision": 0.9917,
+  "recall": 0.9836,
+  "f1": 0.9877,
+  "confusion_matrix": [
+    [
+      277,
+      1
+    ],
+    [
+      2,
+      120
+    ]
+  ],
+  "feature_importance": {
+    "age": 0.063,
+    "bmi": 0.0519,
+    "cycle_length": 0.0593,
+    "cycle_regularity": 0.0583,
+    "weight_gain": 0.0646,
+    "hair_growth": 0.1142,
+    "skin_darkening": 0.1038,
+    "hair_loss": 0.0144,
+    "pimples": 0.0256,
+    "fast_food": 0.049,
+    "exercise": 0.0142,
+    "fsh": 0.0728,
+    "lh": 0.078,
+    "amh": 0.1151,
+    "tsh": 0.0657,
+    "hemoglobin": 0.0502
+  }
+}
