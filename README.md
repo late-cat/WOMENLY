@@ -3,8 +3,8 @@
 Womenly is a web-based women's health assistant focused on menstrual awareness, cycle tracking, and early PCOS risk screening. It combines a lightweight static frontend, a FastAPI backend, and a machine learning model to provide two levels of PCOS assessment:
 
 - Basic screening based on symptoms and lifestyle inputs
-- Advanced screening based on symptoms plus blood test values
-
+- AI-assisted advanced screening that integrates user symptoms with clinical blood test values for deeper risk assessment
+  
 The project also includes Firebase-based authentication and a personal dashboard where users can store monthly screening records and observe longer-term health trends.
 
 ## UI Preview
