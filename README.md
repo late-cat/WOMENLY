@@ -465,7 +465,3 @@ However, the following can still work locally:
 ## Disclaimer
 
 Womenly is intended for educational screening and awareness. It should not be used as a substitute for professional medical advice, diagnosis, or treatment.
-
-## Author / Submission Note
-
-This repository represents the hackathon submission version of Womenly, structured to demonstrate both product flow and implementation details clearly.
