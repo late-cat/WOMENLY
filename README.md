@@ -1,4 +1,4 @@
-# Womenly
+# 🌸 Womenly
 
 Womenly is a web-based women's health assistant focused on menstrual awareness, cycle tracking, and early PCOS risk screening. It combines a lightweight static frontend, a FastAPI backend, and a machine learning model to provide two levels of PCOS assessment:
 
