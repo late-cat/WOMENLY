@@ -25,7 +25,7 @@ app.add_middleware(
 
 MODEL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model")
 
-# Models and metrics loaded at startup
+
 model_basic = None
 model_advanced = None
 metrics_data = None
@@ -61,9 +61,9 @@ class BasicInput(BaseModel):
     age: float
     bmi: float
     cycle_length: float
-    cycle_regularity: int = 0  # from advanced form
-    irregular_periods: int = 0  # from basic screening form (alias)
-    period_duration: int = 0  # received but not used in model
+    cycle_regularity: int = 0
+    irregular_periods: int = 0
+    period_duration: int = 0
     weight_gain: int = 0
     hair_growth: int = 0
     skin_darkening: int = 0
@@ -102,6 +102,7 @@ class PredictionResponse(BaseModel):
     mode: str
 
 
+# doctor recommendations based on risk level
 DOCTOR_REC = {
     "green": (
         "Your indicators look healthy. Continue maintaining a balanced "
@@ -128,7 +129,7 @@ def get_risk(score):
         return "high", "red"
 
 
-
+# endpoints
 @app.get("/")
 def root():
     return {"status": "ok", "message": "Womenly API is running"}
@@ -138,8 +139,6 @@ def root():
 def predict_basic(data: BasicInput):
     if model_basic is None:
         raise HTTPException(503, "Basic model not loaded. Run train_model.py first.")
-
- 
     regularity = data.cycle_regularity or data.irregular_periods
 
     features = np.array(
