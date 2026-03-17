@@ -1,12 +1,91 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Womenly</title>
+  <title>Womenly — AI Health Assistant</title>
+  <meta name="description"
+    content="AI-powered women's health assistant. Track your cycle, screen for PCOS risk, and get personalized health insights.">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
-  <h1>Womenly</h1>
-  <p>Initial project scaffold</p>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand">🌸 WOMENLY <span>AI Health Assistant</span></a>
+      <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">Home</a></li>
+        <li><a href="calculator.html">Cycle Calculator</a></li>
+        <li><a href="screening.html">PCOS Screening</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="metrics.html">Model Info</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Your Health, Your Awareness</h1>
+      <p>AI-powered early health screening &amp; menstrual cycle tracking for women</p>
+    </div>
+
+    <div class="card-grid">
+      <a href="calculator.html" class="feature-card">
+        <div class="card-icon">📅</div>
+        <h3>Cycle Calculator</h3>
+        <p>Track your periods, find safe days, fertile window, and ovulation dates.</p>
+      </a>
+
+      <a href="screening.html" class="feature-card">
+        <div class="card-icon">🔬</div>
+        <h3>PCOS Risk Screening</h3>
+        <p>Answer a few questions and get an AI-powered risk assessment with color-coded tags.</p>
+      </a>
+
+      <a href="dashboard.html" class="feature-card">
+        <div class="card-icon">📊</div>
+        <h3>Health Dashboard</h3>
+        <p>View your monthly records, track health trends, and see your profile risk tag.</p>
+      </a>
+
+      <a href="metrics.html" class="feature-card">
+        <div class="card-icon">🧠</div>
+        <h3>Model Metrics</h3>
+        <p>See how our AI model performs — accuracy, precision, recall, and more.</p>
+      </a>
+    </div>
+
+    <div class="card" style="margin-top: 24px; text-align: center;">
+      <h3 style="margin-bottom: 8px; color: var(--pink-700);">How It Works</h3>
+      <p style="color: var(--text-light); font-size: 0.9rem; max-width: 600px; margin: 0 auto 16px;">
+        Log your monthly health data. After 2–3 months, our system recognizes patterns and assigns a profile-level risk
+        tag.
+      </p>
+      <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 12px;">
+        <span class="risk-tag green"><span class="risk-dot green"></span> Low Risk</span>
+        <span class="risk-tag yellow"><span class="risk-dot yellow"></span> Moderate Risk</span>
+        <span class="risk-tag red"><span class="risk-dot red"></span> High Risk</span>
+      </div>
+    </div>
+
+    <div class="disclaimer">
+      <span class="disclaimer-icon">ℹ️</span>
+      <span>This tool is for educational screening only. It is not a medical diagnosis. Always consult a healthcare
+        professional for personalized advice.</span>
+    </div>
+  </div>
+
+  <footer class="footer">
+    <span id="year"></span> Womenly | Built with ❤ for women's health
+  </footer>
+
+  <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
+
 </html>
