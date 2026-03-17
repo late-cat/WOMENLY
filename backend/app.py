@@ -12,7 +12,7 @@ import json
 import os
 import numpy as np
 
-# ─── Setup ───────────────────────────────────────────────
+
 app = FastAPI(title="Womenly API", version="1.0.0")
 
 app.add_middleware(
@@ -57,7 +57,6 @@ def load_models():
         print("✅ Metrics loaded")
 
 
-# ─── Request Models ──────────────────────────────────────
 class BasicInput(BaseModel):
     age: float
     bmi: float
@@ -103,7 +102,6 @@ class PredictionResponse(BaseModel):
     mode: str
 
 
-# ─── Doctor Recommendations ──────────────────────────────
 DOCTOR_REC = {
     "green": (
         "Your indicators look healthy. Continue maintaining a balanced "
@@ -130,7 +128,7 @@ def get_risk(score):
         return "high", "red"
 
 
-# ─── Endpoints ───────────────────────────────────────────
+
 @app.get("/")
 def root():
     return {"status": "ok", "message": "Womenly API is running"}
@@ -141,7 +139,7 @@ def predict_basic(data: BasicInput):
     if model_basic is None:
         raise HTTPException(503, "Basic model not loaded. Run train_model.py first.")
 
-    # Support both field names from different form versions
+ 
     regularity = data.cycle_regularity or data.irregular_periods
 
     features = np.array(
