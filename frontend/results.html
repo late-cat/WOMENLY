@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Risk Results — Womenly</title>
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+  <nav class="navbar">
+    <div class="container">
+      <a href="index.html" class="brand">🌸 WOMENLY <span>AI Health Assistant</span></a>
+      <button class="nav-toggle" onclick="document.querySelector('.nav-links').classList.toggle('open')">☰</button>
+      <ul class="nav-links">
+        <li><a href="index.html">Home</a></li>
+        <li><a href="calculator.html">Cycle Calculator</a></li>
+        <li><a href="screening.html">PCOS Screening</a></li>
+        <li><a href="dashboard.html">Dashboard</a></li>
+        <li><a href="metrics.html">Model Info</a></li>
+        <li><a href="login.html">Login</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <div class="container">
+    <div class="page-header">
+      <h1>Your Risk Assessment</h1>
+      <p>Based on your reported symptoms and health data</p>
+    </div>
+
+    <div class="card risk-result" id="resultCard" style="max-width: 600px; margin: 0 auto;">
+      <div id="resultContent">
+        <div class="empty-state">
+          <div class="emoji">🔍</div>
+          <p>No screening results found. <a href="screening.html">Take the screening</a> first.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Save to profile (logged-in users) -->
+    <div id="saveSection" style="display: none; text-align: center; margin-top: 16px;">
+      <button class="btn btn-secondary" onclick="saveToProfile()">💾 Save to My Records</button>
+      <p style="font-size: 0.8rem; color: var(--text-light); margin-top: 6px;">Log in to save this record to your monthly history</p>
+    </div>
+
+    <div style="text-align: center; margin-top: 20px;">
+      <a href="screening.html" class="btn btn-secondary">← Take Again</a>
+    </div>
+
+    <div class="disclaimer">
+      <span class="disclaimer-icon">⚠️</span>
+      <span>This is a screening indicator, NOT a medical diagnosis. Please consult a gynecologist or endocrinologist for a proper clinical evaluation.</span>
+    </div>
+  </div>
+
+  <footer class="footer">© <span id="year"></span> Womenly</footer>
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+
+    var DOCTOR_ADVICE = {
+      green: "✅ Your indicators look healthy. Continue maintaining a balanced lifestyle and regular check-ups.",
+      yellow: "⚠️ Some indicators need attention. Consider scheduling a visit with a gynecologist within the next month for a thorough evaluation.",
+      red: "🚨 Multiple risk indicators detected. Please consult a gynecologist or endocrinologist as soon as possible for proper clinical tests (ultrasound, blood tests)."
+    };
+
+    function renderResult() {
+      var raw = sessionStorage.getItem('screening_result');
+      if (!raw) return;
+
+      var r = JSON.parse(raw);
+      var input = JSON.parse(sessionStorage.getItem('screening_input') || '{}');
+      var color = r.tag_color;
+      var score = Math.round(r.risk_score);
+      var labels = { green: 'Low Risk', yellow: 'Moderate Risk', red: 'High Risk' };
+      var icons = { green: '🟢', yellow: '🟡', red: '🔴' };
+
+      var html = '';
+
+      // Big tag
+      html += '<div class="big-tag ' + color + '">' + icons[color] + ' ' + labels[color] + '</div>';
+
+      // Score bar
+      html += '<p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 4px;">Risk Score: <strong>' + score + '%</strong></p>';
+      html += '<div class="risk-score-bar"><div class="risk-score-fill ' + color + '" style="width: ' + score + '%;"></div></div>';
+
+      // Doctor advice
+      html += '<div class="doctor-advice ' + color + '">';
+      html += '<strong>Doctor Recommendation</strong><br>';
+      html += DOCTOR_ADVICE[color];
+      html += '</div>';
+
+      // Symptom summary
+      html += '<div style="text-align: left; margin-top: 20px;">';
+      html += '<h4 style="font-size: 0.9rem; margin-bottom: 8px;">Your Inputs</h4>';
+      html += '<table class="history-table"><tbody>';
+      var friendlyNames = {
+        age: 'Age', bmi: 'BMI', cycle_length: 'Cycle Length', period_duration: 'Period Duration',
+        irregular_periods: 'Irregular Periods', weight_gain: 'Weight Gain', skin_darkening: 'Skin Darkening',
+        hair_growth: 'Excess Hair Growth', hair_loss: 'Hair Loss', pimples: 'Pimples/Acne',
+        exercise: 'Regular Exercise', fast_food: 'Fast Food (frequent)'
+      };
+      for (var key in input) {
+        var val = input[key];
+        var display = (val === 1 ? 'Yes' : (val === 0 && key !== 'age' && key !== 'bmi' && key !== 'cycle_length' && key !== 'period_duration' ? 'No' : val));
+        html += '<tr><td style="color: var(--text-light);">' + (friendlyNames[key] || key) + '</td><td><strong>' + display + '</strong></td></tr>';
+      }
+      html += '</tbody></table></div>';
+
+      document.getElementById('resultContent').innerHTML = html;
+
+      // Show save button if logged in
+      auth.onAuthStateChanged(function(user) {
+        if (user) {
+          document.getElementById('saveSection').style.display = 'block';
+        }
+      });
+    }
+
+    async function saveToProfile() {
+      var user = auth.currentUser;
+      if (!user) { alert('Please log in first.'); return; }
+
+      var result = JSON.parse(sessionStorage.getItem('screening_result'));
+      var input = JSON.parse(sessionStorage.getItem('screening_input'));
+
+      try {
+        await db.collection('users').doc(user.uid).collection('records').add({
+          input: input,
+          result: result,
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          month: new Date().toISOString().slice(0, 7) // e.g. "2026-03"
+        });
+        alert('✅ Record saved to your profile!');
+        document.querySelector('#saveSection button').disabled = true;
+        document.querySelector('#saveSection button').textContent = '✓ Saved';
+      } catch (err) {
+        alert('Error saving: ' + err.message);
+      }
+    }
+
+    renderResult();
+  </script>
+</body>
+</html>
