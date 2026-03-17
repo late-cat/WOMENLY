@@ -11,6 +11,22 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
+
 @app.get("/")
 def root():
     return {"status": "ok", "message": "Womenly API is running"}
+
+
+@app.get("/health")
+def health_check():
+    return {"backend": "up"}
+
+
+@app.post("/cycle")
+def calculate_cycle():
+    return {"message": "cycle route ready"}
+
+
+@app.post("/predict")
+def predict_basic():
+    return {"message": "prediction route ready"}
