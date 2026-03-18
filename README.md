@@ -171,11 +171,12 @@ hakathon-womenly/
 │   ├── app.py
 │   ├── requirements.txt
 │   └── model/
-│       ├── dataset.csv
 │       ├── metrics.json
 │       ├── model_advanced.pkl
-│       ├── model_basic.pkl
-│       └── train_model.py
+│       └── model_basic.pkl
+├── machine_learning/
+│   ├── dataset.csv
+│   └── train_model.py
 └── frontend/
     ├── index.html
     ├── calculator.html
@@ -234,7 +235,7 @@ http://localhost:8000
 
 ### `GET /`
 
-Returns a simple status message.
+Returns `frontend/index.html` when frontend files are present; otherwise returns a simple status message.
 
 ### `GET /health`
 
@@ -289,11 +290,11 @@ Returns the stored performance metrics and feature importance values from the tr
 
 The training script is located at:
 
-- `backend/model/train_model.py`
+- `machine_learning/train_model.py`
 
 It:
 
-- Loads the dataset from `backend/model/dataset.csv`
+- Loads the dataset from `machine_learning/dataset.csv`
 - Renames source columns into cleaner internal feature names
 - Prepares two feature sets: basic and advanced
 - Trains two Random Forest models
