@@ -28,9 +28,17 @@ async def lifespan(app):
 
 app = FastAPI(title="Womenly API", version="1.0.0", lifespan=lifespan)
 
+cors_origins_raw = os.getenv(
+    "CORS_ORIGINS",
+    "http://localhost:5500,http://127.0.0.1:5500,http://localhost:8000,http://127.0.0.1:8000",
+)
+cors_origins = [
+    origin.strip() for origin in cors_origins_raw.split(",") if origin.strip()
+]
+
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=cors_origins if cors_origins else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
