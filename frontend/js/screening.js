@@ -1,13 +1,26 @@
+var currentMode = 'basic';
+
+function switchTab(mode) {
+  currentMode = mode;
+  var tabs = document.querySelectorAll('.tab-btn');
+  tabs[0].classList.toggle('active', mode === 'basic');
+  tabs[1].classList.toggle('active', mode === 'advanced');
+  document.getElementById('advancedFields').classList.toggle('active', mode === 'advanced');
+
+  // Make blood test fields required only in advanced mode
+  var advInputs = document.querySelectorAll('#advancedFields input');
+  advInputs.forEach(function (inp) { inp.required = (mode === 'advanced'); });
+}
+
 function toggleSelect(btn) {
   var group = btn.parentElement;
-  var buttons = group.querySelectorAll('.toggle-btn');
-  buttons.forEach(function(b) { b.classList.remove('selected'); });
+  group.querySelectorAll('.toggle-btn').forEach(function (b) { b.classList.remove('selected'); });
   btn.classList.add('selected');
 }
 
 function getToggleValue(field) {
-  var selected = document.querySelector('[data-field="' + field + '"].selected');
-  return selected ? parseInt(selected.getAttribute('data-value')) : 0;
+  var sel = document.querySelector('[data-field="' + field + '"].selected');
+  return sel ? parseInt(sel.getAttribute('data-value')) : 0;
 }
 
 async function submitScreening() {
@@ -15,38 +28,86 @@ async function submitScreening() {
   btn.disabled = true;
   btn.innerHTML = '<span class="loading-spinner"></span> Analyzing...';
 
+  var bmi = calcBMI();
+  if (!bmi || bmi < 10 || bmi > 60) {
+    alert('Please enter valid weight and height to calculate BMI.');
+    btn.disabled = false;
+    btn.textContent = 'Get Risk Assessment';
+    return;
+  }
+
   var data = {
-    age: parseInt(document.getElementById('age').value),
-    bmi: parseFloat(document.getElementById('bmi').value),
-    cycle_length: parseInt(document.getElementById('cycle_length').value),
-    period_duration: parseInt(document.getElementById('period_duration').value),
-    irregular_periods: getToggleValue('irregular_periods'),
+    age: parseFloat(document.getElementById('age').value),
+    bmi: bmi,
+    cycle_length: parseFloat(document.getElementById('cycle_length').value),
+    cycle_regularity: getToggleValue('cycle_regularity'),
     weight_gain: getToggleValue('weight_gain'),
-    skin_darkening: getToggleValue('skin_darkening'),
     hair_growth: getToggleValue('hair_growth'),
+    skin_darkening: getToggleValue('skin_darkening'),
     hair_loss: getToggleValue('hair_loss'),
     pimples: getToggleValue('pimples'),
-    exercise: getToggleValue('exercise'),
-    fast_food: getToggleValue('fast_food')
+    fast_food: getToggleValue('fast_food'),
+    exercise: getToggleValue('exercise')
   };
 
+  var endpoint = '/predict';
+
+  if (currentMode === 'advanced') {
+    data.fsh = parseFloat(document.getElementById('fsh').value);
+    data.lh = parseFloat(document.getElementById('lh').value);
+    data.amh = parseFloat(document.getElementById('amh').value);
+    data.tsh = parseFloat(document.getElementById('tsh').value);
+    data.hemoglobin = parseFloat(document.getElementById('hemoglobin').value);
+    endpoint = '/predict-advanced';
+  }
+
   try {
-    var resp = await fetch(API_URL + '/predict', {
+    var resp = await fetch(API_URL + endpoint, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
-
+    
+    if (resp.status === 422) {
+      alert('Please fill out all required fields properly.');
+      btn.disabled = false;
+      btn.textContent = 'Get Risk Assessment';
+      return;
+    }
+    
     if (!resp.ok) throw new Error('Server error');
 
     var result = await resp.json();
-    // Store result + input data in sessionStorage for the results page
     sessionStorage.setItem('screening_result', JSON.stringify(result));
     sessionStorage.setItem('screening_input', JSON.stringify(data));
     window.location.href = 'results.html';
   } catch (err) {
-    alert('Could not connect to the prediction server. Make sure the backend is running.');
+    alert('Could not connect to the API server.');
     btn.disabled = false;
     btn.textContent = 'Get Risk Assessment';
   }
 }
+
+function calcBMI() {
+  var w = parseFloat(document.getElementById('weight').value);
+  var h = parseFloat(document.getElementById('height').value);
+  var display = document.getElementById('bmiDisplay');
+  if (w > 0 && h > 0) {
+    var bmi = w / ((h / 100) * (h / 100));
+    bmi = Math.round(bmi * 10) / 10;
+    var label = '';
+    if (bmi < 18.5) label = ' (Underweight)';
+    else if (bmi < 25) label = ' (Normal)';
+    else if (bmi < 30) label = ' (Overweight)';
+    else label = ' (Obese)';
+    display.textContent = bmi + label;
+    return bmi;
+  }
+  display.textContent = '—';
+  return null;
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+    const yearEl = document.getElementById('year');
+    if (yearEl) yearEl.textContent = new Date().getFullYear();
+});
