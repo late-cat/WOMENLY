@@ -1,38 +1,41 @@
-function logOut() {
-  auth.signOut().then(function() {
-    window.location.href = 'login.html';
-  });
-}
-
 var LABELS = { green: 'Low Risk', yellow: 'Moderate Risk', red: 'High Risk' };
 var ICONS = { green: '🟢', yellow: '🟡', red: '🔴' };
 var TRENDS = { improving: '↗ Improving', stable: '→ Stable', worsening: '↘ Worsening' };
 
-auth.onAuthStateChanged(async function(user) {
+function getLocalRecords(uid) {
+  var key = 'womenly_records_' + uid;
+  return JSON.parse(localStorage.getItem(key) || '[]');
+}
+
+auth.onAuthStateChanged(async function (user) {
   if (!user) return;
 
   document.getElementById('authGate').style.display = 'none';
   document.getElementById('dashContent').style.display = 'block';
 
-  // Show user name
-  var userDoc = await db.collection('users').doc(user.uid).get();
-  if (userDoc.exists) {
-    document.getElementById('userName').textContent = userDoc.data().name || user.email;
-  } else {
-    document.getElementById('userName').textContent = user.email;
-  }
-  document.getElementById('navUser').style.display = 'flex';
-
   // Load records
-  var snap = await db.collection('users').doc(user.uid)
-    .collection('records')
-    .orderBy('timestamp', 'desc')
-    .get();
+  var snap;
+  try {
+    snap = await db.collection('users').doc(user.uid)
+      .collection('records')
+      .orderBy('timestamp', 'desc')
+      .get();
+  } catch (err) {
+    console.error('Record load failed:', err.code, err.message);
+    snap = null;
+  }
 
   var records = [];
-  snap.forEach(function(doc) {
-    records.push({ id: doc.id, ...doc.data() });
-  });
+  if (snap) {
+    snap.forEach(function (doc) {
+      var data = doc.data();
+      records.push({ id: doc.id, ...data });
+    });
+  }
+
+  if (records.length === 0) {
+    records = getLocalRecords(user.uid);
+  }
 
   if (records.length === 0) return;
 
@@ -40,7 +43,7 @@ auth.onAuthStateChanged(async function(user) {
   var html = '<table class="history-table">';
   html += '<thead><tr><th>Month</th><th>Risk Score</th><th>Tag</th><th>Doctor Advice</th></tr></thead><tbody>';
 
-  records.forEach(function(r) {
+  records.forEach(function (r) {
     var color = r.result.tag_color;
     var score = Math.round(r.result.risk_score);
     html += '<tr>';
@@ -53,16 +56,27 @@ auth.onAuthStateChanged(async function(user) {
   html += '</tbody></table>';
   document.getElementById('recordsList').innerHTML = html;
 
-  // Profile-level tag (pattern recognition) — needs 2+ records
+  // Profile-level tag (pattern recognition)
   if (records.length >= 2) {
     computeProfileTag(records);
+  } else {
+    var one = records[0];
+    var score = Math.round(one.result.risk_score);
+    var color = one.result.tag_color;
+    var level = LABELS[color] || 'Risk';
+    document.getElementById('profileTag').innerHTML =
+      '<div style="text-align: center;">' +
+      '<span class="risk-tag ' + color + '" style="font-size: 1.05rem; padding: 10px 20px;">' +
+      '<span class="risk-dot ' + color + '"></span> ' + level + ' (' + score + '%)</span>' +
+      '<p style="margin-top: 10px; font-size: 0.85rem; color: var(--text-light);">Need one more monthly record for trend analysis.</p>' +
+      '</div>';
   }
 });
 
 function computeProfileTag(records) {
   // Average risk score across all months
   var total = 0;
-  records.forEach(function(r) { total += r.result.risk_score; });
+  records.forEach(function (r) { total += r.result.risk_score; });
   var avg = total / records.length;
 
   // Determine tag from average
