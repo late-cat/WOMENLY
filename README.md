@@ -19,7 +19,7 @@ Womenly acts as an early awareness and risk screening tool, not a substitute for
 ## Team and Links
 
 - Team Name: Vision-X
-- Live Deployment: https://womenly.onrender.com
+- Live Deployment: https://hakathon-womenly.onrender.com
 - GitHub Repository: https://github.com/late-cat/WOMENLY
 - Demo Video: https://youtu.be/YyfKNt77TY0?si=WNU-0oNR69EiTheQ
 - Presentation (PPT/PDF): https://drive.google.com/drive/folders/1TZXSImqsdWX8mO5zU1vXZxDJz6mdem_Y?usp=sharing
@@ -283,7 +283,7 @@ Without valid Firebase config:
 - Set ENV=development only for local-style hot reload behavior
 - On Render free tier, the first request after inactivity may take some time due to cold starts. Please wait for the app to wake up.
 
-Live URL: https://womenly.onrender.com
+Live URL: https://hakathon-womenly.onrender.com
 
 ## Limitations
 
