@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Model Metrics — Womenly</title>
   <meta name="description" content="View the performance metrics of our AI prediction model for PCOS risk screening.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>W</text></svg>">
   <link rel="stylesheet" href="css/style.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.0/dist/chart.umd.min.js"></script>
 </head>
+
 <body>
 
   <nav class="navbar">
@@ -58,11 +61,23 @@
       <div style="overflow-x: auto;">
         <table class="confusion-matrix" id="confusionMatrix">
           <thead>
-            <tr><th></th><th>Predicted: No PCOS</th><th>Predicted: PCOS</th></tr>
+            <tr>
+              <th></th>
+              <th>Predicted: No PCOS</th>
+              <th>Predicted: PCOS</th>
+            </tr>
           </thead>
           <tbody>
-            <tr><th>Actual: No PCOS</th><td id="cm_tn">—</td><td id="cm_fp">—</td></tr>
-            <tr><th>Actual: PCOS</th><td id="cm_fn">—</td><td id="cm_tp">—</td></tr>
+            <tr>
+              <th>Actual: No PCOS</th>
+              <td id="cm_tn">—</td>
+              <td id="cm_fp">—</td>
+            </tr>
+            <tr>
+              <th>Actual: PCOS</th>
+              <td id="cm_fn">—</td>
+              <td id="cm_tp">—</td>
+            </tr>
           </tbody>
         </table>
       </div>
@@ -92,8 +107,14 @@
 
   <footer class="footer">© <span id="year"></span> Womenly</footer>
 
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.js"></script>
+  <script src="js/global-auth.js"></script>
   <script src="js/config.js"></script>
   <script src="js/metrics.js"></script>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
+
 </html>
