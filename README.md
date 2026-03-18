@@ -2,7 +2,7 @@
 
 Womenly is an AI-enabled menstrual health and early PCOS risk detection platform designed to make reproductive health support more private, accessible, and actionable.
 
-It is not merely a fertility calculator.
+A step beyond traditional fertility calculators.
 
 ## 🌍 Our Vision: Because every woman deserves access to care!
 
