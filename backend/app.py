@@ -3,17 +3,30 @@ Womenly — FastAPI Backend
 Dual-mode PCOS prediction: Basic (symptoms) + Advanced (symptoms + blood tests)
 """
 
+from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
+from fastapi.responses import FileResponse
+from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
-from typing import Optional
 import joblib
 import json
 import os
 import numpy as np
 
 
-app = FastAPI(title="Womenly API", version="1.0.0")
+model_basic = None
+model_advanced = None
+metrics_data = None
+
+
+@asynccontextmanager
+async def lifespan(app):
+    load_models()
+    yield
+
+
+app = FastAPI(title="Womenly API", version="1.0.0", lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -24,14 +37,12 @@ app.add_middleware(
 )
 
 MODEL_DIR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "model")
+FRONTEND_DIR = os.path.join(
+    os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "frontend"
+)
 
 
-model_basic = None
-model_advanced = None
-metrics_data = None
 
-
-@app.on_event("startup")
 def load_models():
     global model_basic, model_advanced, metrics_data
 
@@ -39,22 +50,15 @@ def load_models():
     adv_path = os.path.join(MODEL_DIR, "model_advanced.pkl")
     metrics_path = os.path.join(MODEL_DIR, "metrics.json")
 
-    if os.path.exists(basic_path):
-        model_basic = joblib.load(basic_path)
-        print("✅ Basic model loaded")
-    else:
-        print("⚠️  model_basic.pkl not found")
+    if not os.path.exists(basic_path) or not os.path.exists(adv_path) or not os.path.exists(metrics_path):
+        raise RuntimeError(f"Required ML models or metrics missing in {MODEL_DIR}. Please run dataset training first.")
 
-    if os.path.exists(adv_path):
-        model_advanced = joblib.load(adv_path)
-        print("✅ Advanced model loaded")
-    else:
-        print("⚠️  model_advanced.pkl not found")
+    model_basic = joblib.load(basic_path)
+    model_advanced = joblib.load(adv_path)
+    with open(metrics_path) as f:
+        metrics_data = json.load(f)
 
-    if os.path.exists(metrics_path):
-        with open(metrics_path) as f:
-            metrics_data = json.load(f)
-        print("✅ Metrics loaded")
+    print("✅ All models and metrics loaded successfully.")
 
 
 class BasicInput(BaseModel):
@@ -62,8 +66,6 @@ class BasicInput(BaseModel):
     bmi: float
     cycle_length: float
     cycle_regularity: int = 0
-    irregular_periods: int = 0
-    period_duration: int = 0
     weight_gain: int = 0
     hair_growth: int = 0
     skin_darkening: int = 0
@@ -73,19 +75,7 @@ class BasicInput(BaseModel):
     exercise: int = 0
 
 
-class AdvancedInput(BaseModel):
-    # Basic fields
-    age: float
-    bmi: float
-    cycle_length: float
-    cycle_regularity: int = 0
-    weight_gain: int = 0
-    hair_growth: int = 0
-    skin_darkening: int = 0
-    hair_loss: int = 0
-    pimples: int = 0
-    fast_food: int = 0
-    exercise: int = 0
+class AdvancedInput(BasicInput):
     # Blood test fields
     fsh: float
     lh: float
@@ -132,6 +122,9 @@ def get_risk(score):
 # endpoints
 @app.get("/")
 def root():
+    index_path = os.path.join(FRONTEND_DIR, "index.html")
+    if os.path.exists(index_path):
+        return FileResponse(index_path)
     return {"status": "ok", "message": "Womenly API is running"}
 
 
@@ -139,7 +132,7 @@ def root():
 def predict_basic(data: BasicInput):
     if model_basic is None:
         raise HTTPException(503, "Basic model not loaded. Run train_model.py first.")
-    regularity = data.cycle_regularity or data.irregular_periods
+    regularity = data.cycle_regularity
 
     features = np.array(
         [
@@ -177,13 +170,15 @@ def predict_advanced(data: AdvancedInput):
     if model_advanced is None:
         raise HTTPException(503, "Advanced model not loaded. Run train_model.py first.")
 
+    regularity = data.cycle_regularity
+
     features = np.array(
         [
             [
                 data.age,
                 data.bmi,
                 data.cycle_length,
-                data.cycle_regularity,
+                regularity,
                 data.weight_gain,
                 data.hair_growth,
                 data.skin_darkening,
@@ -227,6 +222,10 @@ def health_check():
         "advanced_model": model_advanced is not None,
         "metrics": metrics_data is not None,
     }
+
+
+if os.path.isdir(FRONTEND_DIR):
+    app.mount("/", StaticFiles(directory=FRONTEND_DIR, html=True), name="frontend")
 
 
 if __name__ == "__main__":
