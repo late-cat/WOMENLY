@@ -1,0 +1,27 @@
+services:
+  - type: web
+    name: womenly
+    runtime: python
+    plan: free
+    branch: main
+    buildCommand: pip install -r requirements.txt
+    startCommand: python backend/app.py
+    healthCheckPath: /health
+    autoDeploy: true
+    envVars:
+      - key: ENV
+        value: production
+      - key: CORS_ORIGINS
+        sync: false
+      - key: FIREBASE_API_KEY
+        sync: false
+      - key: FIREBASE_AUTH_DOMAIN
+        sync: false
+      - key: FIREBASE_PROJECT_ID
+        sync: false
+      - key: FIREBASE_STORAGE_BUCKET
+        sync: false
+      - key: FIREBASE_MESSAGING_SENDER_ID
+        sync: false
+      - key: FIREBASE_APP_ID
+        sync: false

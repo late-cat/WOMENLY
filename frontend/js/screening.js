@@ -67,14 +67,14 @@ async function submitScreening() {
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data)
     });
-    
+
     if (resp.status === 422) {
       alert('Please fill out all required fields properly.');
       btn.disabled = false;
       btn.textContent = 'Get Risk Assessment';
       return;
     }
-    
+
     if (!resp.ok) throw new Error('Server error');
 
     var result = await resp.json();
@@ -123,6 +123,6 @@ function calcBMI() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const yearEl = document.getElementById('year');
-    if (yearEl) yearEl.textContent = new Date().getFullYear();
+  const yearEl = document.getElementById('year');
+  if (yearEl) yearEl.textContent = new Date().getFullYear();
 });

@@ -63,7 +63,9 @@ def load_models():
             or not os.path.exists(adv_path)
             or not os.path.exists(metrics_path)
         ):
-            print(f"WARNING: Required ML models or metrics missing in {MODEL_DIR}. Prediction endpoints will be unavailable.")
+            print(
+                f"WARNING: Required ML models or metrics missing in {MODEL_DIR}. Prediction endpoints will be unavailable."
+            )
             return
 
         model_basic = joblib.load(basic_path)
@@ -263,6 +265,6 @@ if __name__ == "__main__":
 
     port = int(os.environ.get("PORT", 8000))
     is_dev = os.environ.get("ENV", "production").lower() == "development"
-    
+
     print(f"Starting Womenly API on port {port} (Dev mode: {is_dev})")
     uvicorn.run("app:app", host="0.0.0.0", port=port, reload=is_dev)

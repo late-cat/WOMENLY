@@ -20,16 +20,16 @@ async function loadMetrics() {
       var features = Object.keys(m.feature_importance);
       var values = Object.values(m.feature_importance);
 
-      var pairs = features.map(function(f, i) { return { name: f, val: values[i] }; });
-      pairs.sort(function(a, b) { return b.val - a.val; });
+      var pairs = features.map(function (f, i) { return { name: f, val: values[i] }; });
+      pairs.sort(function (a, b) { return b.val - a.val; });
 
       new Chart(document.getElementById('featureChart'), {
         type: 'bar',
         data: {
-          labels: pairs.map(function(p) { return p.name; }),
+          labels: pairs.map(function (p) { return p.name; }),
           datasets: [{
             label: 'Importance',
-            data: pairs.map(function(p) { return p.val; }),
+            data: pairs.map(function (p) { return p.val; }),
             backgroundColor: 'rgba(236, 72, 153, 0.3)',
             borderColor: 'rgba(236, 72, 153, 0.8)',
             borderWidth: 1,

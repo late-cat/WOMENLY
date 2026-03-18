@@ -1,165 +1,166 @@
-# 🌸 Womenly
+# Womenly
 
-Womenly is a web-based women's health assistant focused on menstrual awareness, cycle tracking, and early PCOS risk screening. It combines a lightweight static frontend, a FastAPI backend, and a machine learning model to provide two levels of PCOS assessment:
+Womenly is an AI-enabled menstrual health and early PCOS risk awareness platform designed to make reproductive health support more private, accessible, and actionable.
 
-- Basic screening based on symptoms and lifestyle inputs
-- AI-assisted advanced screening that integrates user symptoms with clinical blood test values for deeper risk assessment
-  
-The project also includes Firebase-based authentication and a personal dashboard where users can store monthly screening records and observe longer-term health trends.
+## Team and Links
 
-## UI Preview
+- Team Name: Vision-X
+- Live Deployment: https://womenly-production.up.railway.app/
+- GitHub Repository: https://github.com/late-cat/WOMENLY
 
-### Home Experience
+## Project Vision
 
-![Womenly Home Page](docs/screenshots/womenly-home.png)
+Many women delay reproductive health checks because of stigma, low awareness, limited specialist access, or cost barriers. Womenly addresses this by combining:
 
-### Cycle Calculator Experience
+- Cycle awareness tools for day-to-day self-management
+- Dual-mode PCOS risk screening for both low-resource and clinical-input scenarios
+- Personal history tracking to identify patterns over time
 
-![Womenly Cycle Calculator](docs/screenshots/womenly-cycle-calculator.png)
+Womenly is an awareness and early-screening assistant, not a medical diagnosis system.
 
-These screens show the practical user journey from awareness-first navigation to actionable cycle insights.
+## Why This Solution Stands Out
 
+### Innovation and Creativity
 
+- Dual-path prediction design:
+  - Basic model for users with only symptom and lifestyle information
+  - Advanced model for users who also have lab values (FSH, LH, AMH, TSH, Hemoglobin)
+- One product with two accessibility levels, so users can start simple and move to deeper screening when reports are available
+- Monthly record tracking and profile-level trend interpretation to shift from one-time screening to continuous awareness
+- Runtime-ready configuration support for both API and Firebase environments
 
-## Why Womenly Matters
+### Technical Complexity
 
-Womenly is built to solve a silent but widespread problem: many women still do not feel safe or supported enough to openly discuss reproductive health concerns. In rural and semi-urban communities especially, stigma, limited health literacy, and lack of nearby specialists often delay timely care.
+- End-to-end architecture across multiple layers:
+  - Static frontend (HTML/CSS/Vanilla JS)
+  - FastAPI backend with typed request and response models
+  - ML training pipeline with data cleaning, feature mapping, model training, and metric export
+  - Firebase Authentication and Firestore for identity and longitudinal records
+- Two separate RandomForest pipelines trained from a shared dataset with different feature subsets
+- Graceful backend behavior when model artifacts are missing (service stays up, prediction endpoints return clear status errors)
+- Metrics endpoint and visualization page (accuracy, precision, recall, F1, confusion matrix, feature importance)
 
-As a result, many users:
+### Feasibility and Scalability
 
-- Do not fully understand their menstrual patterns
-- Cannot confidently track ovulation and safer windows
-- Ignore early symptoms of hormonal imbalance
-- Discover PCOS/PCOD only at advanced stages
+- Deployment-ready on Railway with environment-based port binding
+- Stateless API design, straightforward to scale horizontally
+- Runtime API base URL resolution in frontend for flexible hosting environments
+- Model artifacts persisted under backend/model for fast startup without mandatory retraining
+- Decoupled frontend and backend structure allows independent scaling in later iterations
 
-By the time medical help is sought, complications may already have increased, including emotional stress and fertility-related challenges.
+### Real-World Impact
 
-## Problem Statement
+- Helps users detect risk signals earlier and seek medical consultation sooner
+- Supports private self-assessment for stigma-sensitive health contexts
+- Improves continuity through monthly records and trend visibility
+- Reduces adoption friction in underserved communities where specialist access is delayed
 
-Womenly addresses this gap through a private, judgment-free, and easy-to-use digital flow that converts everyday health inputs into actionable awareness.
+## Product Features
 
-The platform helps users:
+### 1) Cycle Calculator
 
-- Track menstrual cycles and recognize patterns
-- Identify fertile windows and safer periods
-- Monitor irregularities across months
-- Get early PCOS risk indications through guided screening
-
-This positions Womenly as an early-awareness companion, not just a fertility calculator.
-
-## Social Impact and Inclusion
-
-Womenly is intentionally designed for accessibility and underserved contexts:
-
-- Low-friction interface for first-time digital health users
-- Private self-assessment workflow for stigma-sensitive topics
-- Early screening support where immediate clinical access is limited
-- Planned regional language support to improve adoption in local communities
-
-Our long-term goal is to make reproductive health awareness more equitable, regardless of geography or income.
-
-## PCOS Awareness Focus
-
-PCOS/PCOD remains one of the most common but underdiagnosed women's health conditions. Womenly introduces a two-stage screening path to increase reach and depth:
-
-- Basic symptom-based mode for broad accessibility
-- Advanced mode with clinical inputs for deeper insight
-
-This helps users recognize risk earlier and seek consultation at the right time.
-
-Womenly is a screening and awareness tool. It does not replace professional medical diagnosis.
-
-## Key Features
-
-### 1. Cycle Calculator
-
-Users can estimate:
+Computes:
 
 - Fertile window
-- Approximate ovulation period
+- Approximate ovulation range
 - Safer days
-- Expected next period range
+- Expected next period window
 
-The calculator uses the Standard Rhythm Method based on the user's last menstrual period plus shortest and longest cycle lengths.
+Method: standard rhythm calculations based on LMP and shortest/longest cycle lengths.
 
-### 2. Dual-Mode PCOS Screening
+### 2) Dual-Mode PCOS Screening
 
-Womenly supports two prediction modes:
+- Basic endpoint: symptoms and lifestyle factors
+- Advanced endpoint: basic factors plus blood test markers
 
-- Basic mode: symptom and lifestyle-based screening
-- Advanced mode: symptom and lifestyle inputs plus hormone and blood test values
+Response includes:
 
-The result includes:
+- Risk level (low/moderate/high)
+- Risk score (%)
+- Tag color (green/yellow/red)
+- Doctor recommendation text
 
-- Risk level: low, moderate, or high
-- Risk score as a percentage
-- Color-coded tag
-- Doctor-oriented recommendation text
+### 3) Results Experience
 
-### 3. Results Summary
+- Presents risk tag and score visualization
+- Shows doctor-oriented recommendation
+- Displays user-submitted factors in readable form
+- Supports saving records for logged-in users
 
-After prediction, the user is redirected to a results page that shows:
+### 4) Auth, Persistence, and Dashboard
 
-- Risk tag and score bar
-- Medical recommendation summary
-- A readable summary of the user's submitted inputs
+- Google authentication via Firebase
+- Record storage in Firestore under user profile
+- Dashboard with history table, profile-level risk summary, and trend direction (improving/stable/worsening)
+- Local fallback behavior for record visibility when cloud write/read is interrupted
 
-### 4. Authentication and User Records
+### 5) Model Metrics View
 
-Firebase Authentication is used for sign-up and sign-in. Authenticated users can:
+- Reads backend metrics endpoint
+- Displays confusion matrix and feature importances
+- Handles unavailable model state gracefully in UI
 
-- Save screening results to their profile
-- Maintain monthly screening history in Firestore
-- Review their records on a personal dashboard
-
-### 5. Dashboard and Pattern Tracking
-
-The dashboard shows:
-
-- Saved monthly screening records
-- Risk score history
-- Doctor recommendations from previous screenings
-- A profile-level risk tag after at least 2 records
-- A simple trend label: improving, stable, or worsening
-
-### 6. Model Metrics Page
-
-The metrics page reads live model performance data from the backend and displays:
-
-- Accuracy
-- Precision
-- Recall
-- F1 score
-- Confusion matrix
-- Feature importance chart
-
-## Tech Stack
+## Architecture Overview
 
 ### Frontend
 
-- HTML
-- CSS
-- Vanilla JavaScript
-- Chart.js for model feature visualization
+- Pages: home, calculator, screening, results, dashboard, metrics, login
+- Stack: HTML, CSS, Vanilla JS, Chart.js
+- Runtime config:
+  - API URL can be injected via window.__WOMENLY_API_URL__
+  - Firebase config can be injected via window.__WOMENLY_FIREBASE_CONFIG__
 
-### Backend
+### Backend (FastAPI)
 
-- FastAPI
-- Uvicorn
-- Pydantic
-- NumPy
-- Joblib
+Core endpoints:
 
-### Machine Learning
+- GET /
+- GET /health
+- POST /predict
+- POST /predict-advanced
+- GET /metrics
+- GET /js/firebase-config.local.js
 
-- scikit-learn
-- pandas
-- RandomForestClassifier
+Backend behavior:
 
-### Authentication and Database
+- Loads model_basic.pkl, model_advanced.pkl, and metrics.json on startup
+- Mounts frontend static files at root when present
+- Uses ENV and PORT environment variables for development/production runtime control
 
-- Firebase Authentication
-- Cloud Firestore
+### Machine Learning Pipeline
+
+Training script: machine_learning/train_model.py
+
+Pipeline responsibilities:
+
+- Read and clean dataset
+- Normalize feature names
+- Build two feature sets (basic and advanced)
+- Train two RandomForestClassifier models
+- Evaluate with accuracy, precision, recall, F1, and confusion matrix
+- Save model artifacts and metrics into backend/model
+
+## Current Model Snapshot
+
+From backend/model/metrics.json:
+
+- Basic model:
+  - Accuracy: 99.00%
+  - F1: 98.39%
+- Advanced model:
+  - Accuracy: 99.25%
+  - Precision: 99.17%
+  - Recall: 98.36%
+  - F1: 98.77%
+
+Note: these metrics are from the included training artifact and may vary if retrained with updated data.
+
+## Tech Stack
+
+- Frontend: HTML, CSS, Vanilla JavaScript, Chart.js
+- Backend: FastAPI, Uvicorn, Pydantic, NumPy, Joblib
+- Machine Learning: pandas, scikit-learn, RandomForestClassifier
+- Authentication and Database: Firebase Authentication, Cloud Firestore
 
 ## Project Structure
 
@@ -170,259 +171,117 @@ hakathon-womenly/
 ├── backend/
 │   ├── app.py
 │   ├── requirements.txt
-│   └── model/ (Trained assets)
+│   └── model/
 │       ├── metrics.json
-│       ├── model_advanced.pkl
-│       └── model_basic.pkl
+│       ├── model_basic.pkl
+│       └── model_advanced.pkl
 ├── machine_learning/
 │   ├── dataset.csv
 │   └── train_model.py
-└── frontend/
-    ├── index.html
-    ├── ...
-    └── js/
-        ├── firebase-config.js (Injection-ready)
-        └── ...
+├── frontend/
+│   ├── index.html
+│   ├── calculator.html
+│   ├── screening.html
+│   ├── results.html
+│   ├── dashboard.html
+│   ├── metrics.html
+│   ├── login.html
+│   ├── css/
+│   │   └── style.css
+│   └── js/
+│       ├── auth.js
+│       ├── calculator.js
+│       ├── config.js
+│       ├── dashboard.js
+│       ├── firebase-config.js
+│       ├── metrics.js
+│       ├── results.js
+│       └── screening.js
+└── docs/
+    └── screenshots/
 ```
 
-## How the System Works
+## UI Preview
 
-### Frontend Flow
-
-1. The user opens the landing page.
-2. They can use the cycle calculator or go to the PCOS screening form.
-3. The screening form sends data to the FastAPI backend.
-4. The backend returns a prediction response.
-5. The result is stored in `sessionStorage` and rendered on the results page.
-6. Logged-in users can save results to Firestore.
-7. The dashboard reads Firestore records and computes a profile-level tag.
-
-### Backend Flow
-
-When the backend starts:
-
-- It loads `model_basic.pkl`
-- It loads `model_advanced.pkl`
-- It loads `metrics.json`
-
-Then it exposes API endpoints for:
-
-- Health checking
-- Basic prediction
-- Advanced prediction
-- Metrics retrieval
-
-## API Endpoints
-
-Base URL during local development:
-
-```text
-http://localhost:8000
-```
-
-### `GET /`
-
-Returns `frontend/index.html` when frontend files are present; otherwise returns a simple status message.
-
-### `GET /health`
-
-Returns whether the basic model, advanced model, and metrics are loaded.
-
-Example response:
-
-```json
-{
-	"basic_model": true,
-	"advanced_model": true,
-	"metrics": true
-}
-```
-
-### `POST /predict`
-
-Runs the basic screening model.
-
-Expected fields:
-
-- `age`
-- `bmi`
-- `cycle_length`
-- `cycle_regularity`
-- `weight_gain`
-- `hair_growth`
-- `skin_darkening`
-- `hair_loss`
-- `pimples`
-- `fast_food`
-- `exercise`
-
-### `POST /predict-advanced`
-
-Runs the advanced screening model.
-
-Expected fields:
-
-- All basic fields
-- `fsh`
-- `lh`
-- `amh`
-- `tsh`
-- `hemoglobin`
-
-### `GET /metrics`
-
-Returns the stored performance metrics and feature importance values from the training pipeline.
-
-## Machine Learning Pipeline
-
-The training script is located at:
-
-- `machine_learning/train_model.py`
-
-It:
-
-- Loads the dataset from `machine_learning/dataset.csv`
-- Renames source columns into cleaner internal feature names
-- Prepares two feature sets: basic and advanced
-- Trains two Random Forest models
-- Evaluates both models on an 80/20 train-test split
-- Saves trained models as `.pkl` files
-- Saves metrics to `metrics.json`
-
-### Model Outputs Included in This Repo
-
-- `model_basic.pkl`
-- `model_advanced.pkl`
-- `metrics.json`
-
-This means the app can run immediately without retraining, as long as dependencies are installed.
-
-### Current Stored Metrics
-
-From the included `metrics.json`:
-
-- Basic model accuracy: `99.0%`
-- Basic model F1 score: `98.39%`
-- Advanced model accuracy: `99.25%`
-- Advanced model F1 score: `98.77%`
-
-These values reflect the saved local training run included in the repository.
+![Womenly Home Page](docs/screenshots/womenly-home.png)
+![Womenly Cycle Calculator](docs/screenshots/womenly-cycle-calculator.png)
 
 ## Local Setup
 
-### 1. Clone the Repository
+### 1) Clone and enter
 
 ```bash
-git clone <your-repo-url>
+git clone https://github.com/late-cat/WOMENLY.git
 cd hakathon-womenly
 ```
 
-### 2. Create a Virtual Environment
+### 2) Create and activate virtual environment
 
 ```bash
 python3 -m venv .venv
 source .venv/bin/activate
 ```
 
-### 3. Install Dependencies
-
-Recommended:
+### 3) Install dependencies
 
 ```bash
 pip install -r requirements.txt
 ```
 
-The root `requirements.txt` is the safer install target because it includes the ML dependencies used by the training and metrics pipeline.
-
-### 4. Run the Backend
+### 4) Run backend
 
 ```bash
 cd backend
 python app.py
 ```
 
-The API will start on:
+Backend URL: http://localhost:8000
 
-```text
-http://localhost:8000
-```
-
-### 5. Run the Frontend
-
-Because the frontend is static HTML/CSS/JS, you can serve it with a simple local server.
-
-From the `frontend` folder:
+### 5) Run frontend separately (optional)
 
 ```bash
+cd frontend
 python3 -m http.server 5500
 ```
 
-Then open:
-
-```text
-http://localhost:5500
-```
-
-If you use a different frontend port or host, keep `frontend/js/config.js` aligned with the backend URL.
+Frontend URL: http://localhost:5500
 
 ## Firebase Setup
 
-The app is ready for dynamic configuration. You can either:
+Womenly supports two configuration patterns:
 
-1.  **Direct Edit**: Replace `YOUR_API_KEY` in `frontend/js/firebase-config.js`.
-2.  **Injection**: Set `window.__WOMENLY_FIREBASE_CONFIG__` in a script tag before loading `firebase-config.js`.
+- Direct file configuration in frontend/js/firebase-config.js
+- Runtime injection by defining window.__WOMENLY_FIREBASE_CONFIG__ before Firebase initialization
 
-Without Firebase configuration, Google Login and the personal dashboard will not function.
+Without valid Firebase config:
 
-## Deployment (Railway)
+- Google login will not work
+- Dashboard cloud history will not load/save
 
-The backend is optimized for Railway:
-- It automatically listens on the environment-provided `PORT`.
-- It mounts the `frontend` folder at the root `/`.
-- To enable hot-reload in development, set the environment variable `ENV=development`.
+## Deployment Notes (Railway)
 
-**Important**: Ensure `backend/model/` contains your trained `.pkl` and `.json` files before deploying, or run the training script as part of your build process.
+- App supports Railway-style PORT binding
+- Static frontend is mounted by FastAPI at /
+- Keep backend/model artifacts available in deployment image, or run training during build
+- Set ENV=development only for local-style hot reload behavior
 
-## Sample Use Cases
-
-### For a general user
-
-- Estimate fertile days using the cycle calculator
-- Complete a monthly symptom screening
-- Save results after logging in
-- Observe changes in risk over time on the dashboard
-
-### For a user with lab reports
-
-- Choose advanced screening
-- Enter FSH, LH, AMH, TSH, and hemoglobin values
-- Receive a more detailed prediction score
-
-### For reviewers and judges
-
-- Open the landing page to understand the workflow
-- Test both screening modes
-- Visit the model metrics page to inspect performance outputs
-- Review the dashboard flow with Firebase configured
-- Evaluate the inclusion objective: early awareness support for users with limited clinical access
+Live URL: https://womenly-production.up.railway.app/
 
 ## Limitations
 
-- This is not a medical diagnosis tool
-- Model quality depends on the training dataset used
-- Firebase configuration is required for authentication and saved history
-- The frontend is static and does not use a build system
-- Some backend dependencies are managed through the root `requirements.txt`, so using only `backend/requirements.txt` may be insufficient for retraining the model
+- Not a clinical diagnostic tool
+- Output quality depends on dataset quality and representativeness
+- Full authenticated experience requires internet and Firebase setup
+- No multilingual UI yet
 
-## Future Improvements
+## Future Roadmap
 
-- Add stronger form validation and error states
-- Add historical charts to the dashboard
-- Add export/download support for saved health reports
-- Add appointment and doctor referral workflows
-- Add multilingual support and better accessibility coverage
-- Deploy frontend and backend with environment-based configuration
+- Multilingual and low-literacy UX support
+- Better explainability layer for risk factors
+- Role-based clinician review interface
+- Stronger offline-first and sync-resilience behavior
+- Expanded datasets for broader population generalization
 
-## Disclaimer
+---
 
-Womenly is intended for educational screening and awareness. It should not be used as a substitute for professional medical advice, diagnosis, or treatment.
+Built by Vision-X for practical, privacy-aware women's health awareness.
