@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Womenly — AI Health Assistant</title>
-  <meta name="description" content="AI-powered women's health assistant. Track your cycle, screen for PCOS risk, and get personalized health insights.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <meta name="description"
+    content="AI-powered women's health assistant. Track your cycle, screen for PCOS risk, and get personalized health insights.">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
   <nav class="navbar">
@@ -60,7 +64,8 @@
     <div class="card" style="margin-top: 24px; text-align: center;">
       <h3 style="margin-bottom: 8px; color: var(--pink-700);">How It Works</h3>
       <p style="color: var(--text-light); font-size: 0.9rem; max-width: 600px; margin: 0 auto 16px;">
-        Log your monthly health data. After 2–3 months, our system recognizes patterns and assigns a profile-level risk tag.
+        Log your monthly health data. After 2–3 months, our system recognizes patterns and assigns a profile-level risk
+        tag.
       </p>
       <div style="display: flex; justify-content: center; gap: 20px; flex-wrap: wrap; margin-top: 12px;">
         <span class="risk-tag green"><span class="risk-dot green"></span> Low Risk</span>
@@ -71,7 +76,8 @@
 
     <div class="disclaimer">
       <span class="disclaimer-icon">ℹ️</span>
-      <span>This tool is for educational screening only. It is not a medical diagnosis. Always consult a healthcare professional for personalized advice.</span>
+      <span>This tool is for educational screening only. It is not a medical diagnosis. Always consult a healthcare
+        professional for personalized advice.</span>
     </div>
   </div>
 
@@ -82,8 +88,10 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.local.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/global-auth.js"></script>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
+
 </html>
