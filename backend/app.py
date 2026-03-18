@@ -6,7 +6,7 @@ Dual-mode PCOS prediction: Basic (symptoms) + Advanced (symptoms + blood tests)
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse
+from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
 from pydantic import BaseModel
 import joblib
@@ -235,6 +235,27 @@ def health_check():
         "advanced_model": model_advanced is not None,
         "metrics": metrics_data is not None,
     }
+
+
+@app.get("/js/firebase-config.local.js")
+def firebase_local_config_js():
+    # Optional runtime config for hosted environments (e.g., Railway).
+    config = {
+        "apiKey": os.getenv("FIREBASE_API_KEY", ""),
+        "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN", ""),
+        "projectId": os.getenv("FIREBASE_PROJECT_ID", ""),
+        "storageBucket": os.getenv("FIREBASE_STORAGE_BUCKET", ""),
+        "messagingSenderId": os.getenv("FIREBASE_MESSAGING_SENDER_ID", ""),
+        "appId": os.getenv("FIREBASE_APP_ID", ""),
+    }
+
+    # Only emit runtime override if all fields are present.
+    if all(config.values()):
+        payload = "window.__WOMENLY_FIREBASE_CONFIG__ = " + json.dumps(config) + ";"
+    else:
+        payload = "// FIREBASE_* environment variables are not fully configured."
+
+    return Response(content=payload, media_type="application/javascript")
 
 
 if os.path.isdir(FRONTEND_DIR):
