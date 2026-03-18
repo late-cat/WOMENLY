@@ -1,13 +1,17 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Cycle Calculator — Womenly</title>
-  <meta name="description" content="Calculate your safe days, fertile window, and ovulation dates using the Standard Rhythm Method.">
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
+  <meta name="description"
+    content="Calculate your safe days, fertile window, and ovulation dates using the Standard Rhythm Method.">
+  <link rel="icon"
+    href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌸</text></svg>">
   <link rel="stylesheet" href="css/style.css">
 </head>
+
 <body>
 
   <nav class="navbar">
@@ -56,20 +60,45 @@
         </form>
       </div>
 
-      <!-- Results -->
-      <div class="card">
-        <h3 style="margin-bottom: 12px; color: var(--pink-700);">Results</h3>
-        <div id="resultsPlaceholder" style="color: var(--text-light); font-size: 0.85rem;">
-          Results will appear here after calculation.
+      <!-- Results + Explanation -->
+      <div class="calc-right-column">
+        <div class="card">
+          <h3 style="margin-bottom: 12px; color: var(--pink-700);">Results</h3>
+          <div id="resultsPlaceholder" style="color: var(--text-light); font-size: 0.85rem;">
+            Results will appear here after calculation.
+          </div>
+          <div id="results" style="display: none;"></div>
         </div>
-        <div id="results" style="display: none;"></div>
+
+        <div class="card calc-meaning">
+          <h4>What does this mean?</h4>
+          <ul class="calc-meaning-list">
+            <li>
+              <strong>🩷 Fertile Window:</strong>
+              <span>These are the days when pregnancy is most likely. Best time if trying to conceive.</span>
+            </li>
+            <li>
+              <strong>🟡 Ovulation (approx):</strong>
+              <span>The time when an egg is released. This is the most fertile point.</span>
+            </li>
+            <li>
+              <strong>🟢 Safer Days:</strong>
+              <span>Days with lower chances of pregnancy, but not completely safe.</span>
+            </li>
+            <li>
+              <strong>📅 Next Period Expected:</strong>
+              <span>Estimated dates when your next period may begin.</span>
+            </li>
+          </ul>
+        </div>
       </div>
 
     </div>
 
     <div class="disclaimer" style="margin-bottom: 32px;">
       <span class="disclaimer-icon">⚠️</span>
-      <span>The calendar method is 75–88% effective with typical use. It is not 100% reliable. Consult a healthcare provider for personalized advice.</span>
+      <span>The calendar method is 75–88% effective with typical use. It is not 100% reliable. Consult a healthcare
+        provider for personalized advice.</span>
     </div>
   </div>
 
@@ -78,9 +107,11 @@
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.12.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-config.local.js"></script>
   <script src="js/firebase-config.js"></script>
   <script src="js/global-auth.js"></script>
   <script src="js/calculator.js"></script>
   <script>document.getElementById('year').textContent = new Date().getFullYear();</script>
 </body>
+
 </html>
