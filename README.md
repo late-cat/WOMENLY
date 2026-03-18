@@ -21,6 +21,7 @@ Womenly acts as an early awareness and risk screening tool, not a substitute for
 - Team Name: Vision-X
 - Live Deployment: https://womenly.onrender.com
 - GitHub Repository: https://github.com/late-cat/WOMENLY
+- Demo Video: https://youtu.be/YyfKNt77TY0?si=WNU-0oNR69EiTheQ
 
 ## 🤷🏻‍♀️ Why Womenly Stands Out?
 

@@ -13,6 +13,10 @@ import joblib
 import json
 import os
 import numpy as np
+from dotenv import load_dotenv
+
+# Load environment variables from .env file if it exists
+load_dotenv()
 
 
 model_basic = None
@@ -250,9 +254,14 @@ def firebase_local_config_js():
 
     if all(config.values()):
         payload = "window.__WOMENLY_FIREBASE_CONFIG__ = " + json.dumps(config) + ";"
-    else:
-        payload = "// FIREBASE_* environment variables are not fully configured."
+        return Response(content=payload, media_type="application/javascript")
+    
+    # Fallback: Serve the physical static file if it exists (useful for local development)
+    local_file_path = os.path.join(FRONTEND_DIR, "js", "firebase-config.local.js")
+    if os.path.exists(local_file_path):
+        return FileResponse(local_file_path)
 
+    payload = "// FIREBASE_* environment variables are not fully configured and no local file found."
     return Response(content=payload, media_type="application/javascript")
 
 
