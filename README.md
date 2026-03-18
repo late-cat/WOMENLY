@@ -185,9 +185,9 @@ Note: these metrics are from the included training artifact and may vary if retr
 hakathon-womenly/
 ├── README.md
 ├── requirements.txt
+├── render.yaml
 ├── backend/
 │   ├── app.py
-│   ├── requirements.txt
 │   └── model/
 │       ├── metrics.json
 │       ├── model_basic.pkl
@@ -275,13 +275,15 @@ Without valid Firebase config:
 - Google login will not work
 - Dashboard cloud history will not load or save
 
-## Deployment Notes (Render)
+## Deployment (Render)
 
-- App supports Render-style PORT binding
-- Static frontend is mounted by FastAPI at /
-- Keep backend/model artifacts available in the deployment image, or run training during build
-- Set ENV=development only for local-style hot reload behavior
-- On Render free tier, the first request after inactivity may take some time due to cold starts. Please wait for the app to wake up.
+Womenly is configured for easy deployment on Render using the included `render.yaml` blueprint.
+
+- **Automatic Configuration**: Render will detect `render.yaml` and set up the web service with the correct build and start commands.
+- **Build Command**: `pip install -r requirements.txt`
+- **Start Command**: `uvicorn backend.app:app`
+- **Static Hosting**: The static frontend is automatically mounted by FastAPI at the root (`/`).
+- **Cold Starts**: On Render's free tier, the first request after inactivity may take ~50 seconds to wake up the service.
 
 Live URL: https://hakathon-womenly.onrender.com
 
