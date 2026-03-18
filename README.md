@@ -22,6 +22,9 @@ Womenly acts as an early awareness and risk screening tool, not a substitute for
 - Live Deployment: https://womenly.onrender.com
 - GitHub Repository: https://github.com/late-cat/WOMENLY
 - Demo Video: https://youtu.be/YyfKNt77TY0?si=WNU-0oNR69EiTheQ
+- Presentation (PPT/PDF): https://drive.google.com/drive/folders/1TZXSImqsdWX8mO5zU1vXZxDJz6mdem_Y?usp=sharing
+- Presentation includes: Problem statement and solution explanation
+- Presentation includes: Future scope and scalability details
 
 ## 🤷🏻‍♀️ Why Womenly Stands Out?
 
