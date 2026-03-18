@@ -42,7 +42,6 @@ FRONTEND_DIR = os.path.join(
 )
 
 
-
 def load_models():
     global model_basic, model_advanced, metrics_data
 
@@ -50,15 +49,21 @@ def load_models():
     adv_path = os.path.join(MODEL_DIR, "model_advanced.pkl")
     metrics_path = os.path.join(MODEL_DIR, "metrics.json")
 
-    if not os.path.exists(basic_path) or not os.path.exists(adv_path) or not os.path.exists(metrics_path):
-        raise RuntimeError(f"Required ML models or metrics missing in {MODEL_DIR}. Please run dataset training first.")
+    if (
+        not os.path.exists(basic_path)
+        or not os.path.exists(adv_path)
+        or not os.path.exists(metrics_path)
+    ):
+        raise RuntimeError(
+            f"Required ML models or metrics missing in {MODEL_DIR}. Please run dataset training first."
+        )
 
     model_basic = joblib.load(basic_path)
     model_advanced = joblib.load(adv_path)
     with open(metrics_path) as f:
         metrics_data = json.load(f)
 
-    print("✅ All models and metrics loaded successfully.")
+    print("All models and metrics loaded successfully.")
 
 
 class BasicInput(BaseModel):

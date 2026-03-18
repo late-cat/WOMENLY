@@ -73,7 +73,7 @@ def load_data():
     missing = {k: v for k, v in all_map.items() if k not in df.columns}
 
     if missing:
-        print(f"\n⚠️  Missing columns (will skip): {list(missing.keys())}")
+        print(f"\nMissing columns (will skip): {list(missing.keys())}")
     print(f"Found {len(found)}/{len(all_map)} feature columns")
 
     df = df.rename(columns=found)
@@ -201,7 +201,7 @@ def main():
     metrics_path = os.path.join(DIR, "metrics.json")
     with open(metrics_path, "w") as f:
         json.dump(metrics, f, indent=2)
-    print(f"\n✅ Metrics saved: {metrics_path}")
+    print(f"\nMetrics saved: {metrics_path}")
     print("\nDone! Both models are ready.")
 
 
