@@ -1,5 +1,14 @@
+# Environments
 venv/
+.env
+
+# Python caches
 __pycache__/
 *.pyc
-.env
-backend/model/*.joblib
+
+# Logs
+logs/
+*.log
+
+# OS generated files
+.DS_Store
