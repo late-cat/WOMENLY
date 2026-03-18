@@ -22,7 +22,7 @@ Womenly acts as an early awareness and risk screening tool, not a substitute for
 - Live Deployment: https://womenly.onrender.com
 - GitHub Repository: https://github.com/late-cat/WOMENLY
 
-## Why Womenly Stands Out?
+## 🤷🏻‍♀️ Why Womenly Stands Out?
 
 - Dual-mode prediction system:
 	- Basic screening using symptoms and lifestyle inputs
@@ -36,7 +36,7 @@ Womenly acts as an early awareness and risk screening tool, not a substitute for
 - Deployment-ready flexibility:
 	- Runtime configuration for API and Firebase enables smooth integration across environments
 
-### Technical Complexity
+### 👩🏻‍💻 Technical Complexity
 
 - End-to-end multi-layer architecture:
 	- Lightweight frontend (HTML, CSS, Vanilla JS)
@@ -58,7 +58,7 @@ Womenly acts as an early awareness and risk screening tool, not a substitute for
 - Model artifacts persisted under backend/model for fast startup without mandatory retraining
 - Decoupled frontend and backend structure allows independent scaling in later iterations
 
-### Real-World Impact
+### 👸🏻 Real-World Impact
 
 - Enables early awareness by helping users detect risk signals and seek timely medical consultation
 - Supports private self-assessment in stigma-sensitive health contexts
