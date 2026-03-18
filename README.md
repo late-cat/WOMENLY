@@ -5,7 +5,7 @@ Womenly is an AI-enabled menstrual health and early PCOS risk awareness platform
 ## Team and Links
 
 - Team Name: Vision-X
-- Live Deployment: https://womenly-production.up.railway.app/
+- Live Deployment: https://womenly.onrender.com
 - GitHub Repository: https://github.com/late-cat/WOMENLY
 
 ## Project Vision
@@ -42,7 +42,7 @@ Womenly is an awareness and early-screening assistant, not a medical diagnosis s
 
 ### Feasibility and Scalability
 
-- Deployment-ready on Railway with environment-based port binding
+- Deployment-ready on Render with environment-based port binding
 - Stateless API design, straightforward to scale horizontally
 - Runtime API base URL resolution in frontend for flexible hosting environments
 - Model artifacts persisted under backend/model for fast startup without mandatory retraining
@@ -258,14 +258,15 @@ Without valid Firebase config:
 - Google login will not work
 - Dashboard cloud history will not load/save
 
-## Deployment Notes (Railway)
+## Deployment Notes (Render)
 
-- App supports Railway-style PORT binding
+- App supports Render-style PORT binding
 - Static frontend is mounted by FastAPI at /
 - Keep backend/model artifacts available in deployment image, or run training during build
 - Set ENV=development only for local-style hot reload behavior
+- On Render free tier, the first request after inactivity may take some time due to cold starts. Please wait for the app to wake up.
 
-Live URL: https://womenly-production.up.railway.app/
+Live URL: https://womenly.onrender.com
 
 ## Limitations
 
