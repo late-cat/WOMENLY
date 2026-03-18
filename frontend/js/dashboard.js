@@ -2,6 +2,25 @@ var LABELS = { green: 'Low Risk', yellow: 'Moderate Risk', red: 'High Risk' };
 var ICONS = { green: '🟢', yellow: '🟡', red: '🔴' };
 var TRENDS = { improving: '↗ Improving', stable: '→ Stable', worsening: '↘ Worsening' };
 
+function normalizeRecord(record) {
+  if (!record || !record.result) return null;
+
+  var allowedColors = { green: true, yellow: true, red: true };
+  var color = allowedColors[record.result.tag_color] ? record.result.tag_color : 'yellow';
+  var score = Number(record.result.risk_score);
+  if (!Number.isFinite(score)) score = 0;
+
+  return {
+    id: record.id || '',
+    month: record.month || '–',
+    result: {
+      tag_color: color,
+      risk_score: score,
+      doctor_recommendation: record.result.doctor_recommendation || ''
+    }
+  };
+}
+
 function getLocalRecords(uid) {
   var key = 'womenly_records_' + uid;
   return JSON.parse(localStorage.getItem(key) || '[]');
@@ -36,6 +55,8 @@ auth.onAuthStateChanged(async function (user) {
   if (records.length === 0) {
     records = getLocalRecords(user.uid);
   }
+
+  records = records.map(normalizeRecord).filter(function (r) { return r !== null; });
 
   if (records.length === 0) return;
 

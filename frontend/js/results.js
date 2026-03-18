@@ -1,4 +1,4 @@
-document.addEventListener('DOMContentLoaded', function() {
+document.addEventListener('DOMContentLoaded', function () {
   document.getElementById('year').textContent = new Date().getFullYear();
   renderResult();
 });
@@ -15,8 +15,9 @@ function renderResult() {
 
   var r = JSON.parse(raw);
   var input = JSON.parse(sessionStorage.getItem('screening_input') || '{}');
-  var color = r.tag_color;
-  var score = Math.round(r.risk_score);
+  var allowedColors = { green: true, yellow: true, red: true };
+  var color = allowedColors[r.tag_color] ? r.tag_color : 'yellow';
+  var score = Math.round(Number(r.risk_score) || 0);
   var labels = { green: 'Low Risk', yellow: 'Moderate Risk', red: 'High Risk' };
   var icons = { green: '🟢', yellow: '🟡', red: '🔴' };
 
@@ -32,7 +33,7 @@ function renderResult() {
   // Doctor advice
   html += '<div class="doctor-advice ' + color + '">';
   html += '<strong>Doctor Recommendation</strong><br>';
-  html += DOCTOR_ADVICE[color];
+  html += r.doctor_recommendation || DOCTOR_ADVICE[color] || 'Please consult a doctor for a detailed evaluation.';
   html += '</div>';
 
   // Symptom summary
@@ -67,7 +68,7 @@ function renderResult() {
 
 function getCurrentUserOnce() {
   return new Promise(function (resolve) {
-    var timeoutId = setTimeout(function() {
+    var timeoutId = setTimeout(function () {
       resolve(null);
     }, 1500);
 
@@ -101,18 +102,18 @@ function saveRecordLocally(uid, recordId, monthLabel, input, result) {
 
 async function saveToProfile() {
   var user = auth.currentUser;
-  if (!user) { 
+  if (!user) {
     user = await getCurrentUserOnce();
   }
-  
-  if (!user) { 
-    alert('Please log in from the top right menu first to save this record to your profile!'); 
-    return; 
+
+  if (!user) {
+    alert('Please log in from the top right menu first to save this record to your profile!');
+    return;
   }
 
   var result = JSON.parse(sessionStorage.getItem('screening_result'));
   var input = JSON.parse(sessionStorage.getItem('screening_input'));
-  var recordId = new Date().toISOString(); 
+  var recordId = new Date().toISOString();
   var monthLabel = recordId.slice(0, 7);
   var btn = document.querySelector('#saveSection button');
   btn.disabled = true;
@@ -123,15 +124,15 @@ async function saveToProfile() {
       input: input || {},
       result: result || {},
       timestamp: firebase.firestore.FieldValue.serverTimestamp(),
-      month: monthLabel 
+      month: monthLabel
     }, { merge: true });
 
-    var timeoutPromise = new Promise(function(_, reject) {
-      setTimeout(function() { reject(new Error('timeout')); }, 5000);
+    var timeoutPromise = new Promise(function (_, reject) {
+      setTimeout(function () { reject(new Error('timeout')); }, 5000);
     });
 
     await Promise.race([savePromise, timeoutPromise]);
-    
+
     saveRecordLocally(user.uid, recordId, monthLabel, input, result);
     alert('✅ Record saved to your profile!');
     btn.textContent = '✓ Saved';
