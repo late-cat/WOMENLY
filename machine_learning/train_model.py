@@ -27,11 +27,11 @@ from sklearn.metrics import (
     confusion_matrix,
 )
 
-# path setup
-DIR = os.path.dirname(os.path.abspath(__file__))
-DATA_PATH = os.path.join(DIR, "dataset.csv")
+SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
+DATA_PATH = os.path.join(SCRIPT_DIR, "dataset.csv")
+DIR = os.path.join(os.path.dirname(SCRIPT_DIR), "backend", "model")
+os.makedirs(DIR, exist_ok=True)
 
-# feature sets
 BASIC_FEATURES = {
     " Age (yrs)": "age",
     "BMI": "bmi",
@@ -46,7 +46,6 @@ BASIC_FEATURES = {
     "Reg.Exercise(Y/N)": "exercise",
 }
 
-# advance: with blood reports
 ADVANCED_EXTRA = {
     "FSH(mIU/mL)": "fsh",
     "LH(mIU/mL)": "lh",
@@ -157,7 +156,6 @@ def train_model(df, feature_cols, model_name):
     for col in feature_cols:
         medians[col] = float(X_train[col].median())
 
-    # Save model
     model_path = os.path.join(DIR, f"{model_name}.pkl")
     joblib.dump(model, model_path)
     print(f"Saved: {model_path}")
@@ -179,17 +177,13 @@ def train_model(df, feature_cols, model_name):
 def main():
     df, basic_cols, advanced_cols = load_data()
 
-    # Train basic model (symptoms only)
     basic_metrics = train_model(df, basic_cols, "model_basic")
 
-    # Train advanced model (symptoms + blood tests)
     advanced_metrics = train_model(df, advanced_cols, "model_advanced")
 
-    # Save combined metrics
     metrics = {
         "basic": basic_metrics,
         "advanced": advanced_metrics,
-        # Use advanced metrics as the default display
         "accuracy": advanced_metrics["accuracy"],
         "precision": advanced_metrics["precision"],
         "recall": advanced_metrics["recall"],

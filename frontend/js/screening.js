@@ -80,6 +80,21 @@ async function submitScreening() {
     var result = await resp.json();
     sessionStorage.setItem('screening_result', JSON.stringify(result));
     sessionStorage.setItem('screening_input', JSON.stringify(data));
+
+    var user = auth.currentUser;
+    if (user) {
+      try {
+        await db.collection('users').doc(user.uid).collection('records').add({
+          timestamp: firebase.firestore.FieldValue.serverTimestamp(),
+          month: new Date().toLocaleString('default', { month: 'long', year: 'numeric' }),
+          result: result,
+          input: data
+        });
+      } catch (fsErr) {
+        console.error('Failed to save to Firestore:', fsErr);
+      }
+    }
+
     window.location.href = 'results.html';
   } catch (err) {
     alert('Could not connect to the API server.');

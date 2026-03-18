@@ -8,14 +8,12 @@ const firebaseConfig = window.__WOMENLY_FIREBASE_CONFIG__ || {
 };
 
 function hasPlaceholderFirebaseConfig(config) {
-  return Object.keys(config).some(function (key) {
-    return typeof config[key] === 'string' && config[key].indexOf('YOUR_') === 0;
-  });
+  return !config.apiKey || config.apiKey.startsWith('YOUR_');
 }
 
 if (hasPlaceholderFirebaseConfig(firebaseConfig)) {
-  console.error(
-    'Firebase config is not set. Create frontend/js/firebase-config.local.js using frontend/js/firebase-config.local.example.js and fill real values.'
+  console.warn(
+    'Womenly: Firebase placeholders detected. Google Login will not work until you replace YOUR_API_KEY etc.'
   );
 }
 

@@ -4,13 +4,11 @@ async function loadMetrics() {
     if (!resp.ok) throw new Error('Server not reachable');
     var m = await resp.json();
 
-    // Summary metrics
     document.getElementById('metricAccuracy').textContent = (m.accuracy * 100).toFixed(1) + '%';
     document.getElementById('metricPrecision').textContent = (m.precision * 100).toFixed(1) + '%';
     document.getElementById('metricRecall').textContent = (m.recall * 100).toFixed(1) + '%';
     document.getElementById('metricF1').textContent = (m.f1 * 100).toFixed(1) + '%';
 
-    // Confusion matrix
     if (m.confusion_matrix) {
       document.getElementById('cm_tn').textContent = m.confusion_matrix[0][0];
       document.getElementById('cm_fp').textContent = m.confusion_matrix[0][1];
@@ -18,12 +16,10 @@ async function loadMetrics() {
       document.getElementById('cm_tp').textContent = m.confusion_matrix[1][1];
     }
 
-    // Feature importance chart
     if (m.feature_importance) {
       var features = Object.keys(m.feature_importance);
       var values = Object.values(m.feature_importance);
 
-      // Sort by importance
       var pairs = features.map(function(f, i) { return { name: f, val: values[i] }; });
       pairs.sort(function(a, b) { return b.val - a.val; });
 
@@ -53,11 +49,14 @@ async function loadMetrics() {
     }
   } catch (err) {
     console.log('Could not load metrics:', err.message);
-    // Show friendly message
-    document.getElementById('metricAccuracy').textContent = '—';
-    document.getElementById('metricPrecision').textContent = '—';
-    document.getElementById('metricRecall').textContent = '—';
-    document.getElementById('metricF1').textContent = '—';
+    var msg = '—';
+    if (err.message.includes('503')) {
+      msg = 'Model not trained';
+    }
+    document.getElementById('metricAccuracy').textContent = msg;
+    document.getElementById('metricPrecision').textContent = msg;
+    document.getElementById('metricRecall').textContent = msg;
+    document.getElementById('metricF1').textContent = msg;
   }
 }
 

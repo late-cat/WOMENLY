@@ -57,21 +57,22 @@ def load_models():
     adv_path = os.path.join(MODEL_DIR, "model_advanced.pkl")
     metrics_path = os.path.join(MODEL_DIR, "metrics.json")
 
-    if (
-        not os.path.exists(basic_path)
-        or not os.path.exists(adv_path)
-        or not os.path.exists(metrics_path)
-    ):
-        raise RuntimeError(
-            f"Required ML models or metrics missing in {MODEL_DIR}. Please run dataset training first."
-        )
+    try:
+        if (
+            not os.path.exists(basic_path)
+            or not os.path.exists(adv_path)
+            or not os.path.exists(metrics_path)
+        ):
+            print(f"WARNING: Required ML models or metrics missing in {MODEL_DIR}. Prediction endpoints will be unavailable.")
+            return
 
-    model_basic = joblib.load(basic_path)
-    model_advanced = joblib.load(adv_path)
-    with open(metrics_path) as f:
-        metrics_data = json.load(f)
-
-    print("All models and metrics loaded successfully.")
+        model_basic = joblib.load(basic_path)
+        model_advanced = joblib.load(adv_path)
+        with open(metrics_path) as f:
+            metrics_data = json.load(f)
+        print("All models and metrics loaded successfully.")
+    except Exception as e:
+        print(f"ERROR: Failed to load models: {e}")
 
 
 class BasicInput(BaseModel):
@@ -89,7 +90,6 @@ class BasicInput(BaseModel):
 
 
 class AdvancedInput(BasicInput):
-    # Blood test fields
     fsh: float
     lh: float
     amh: float
@@ -105,7 +105,6 @@ class PredictionResponse(BaseModel):
     mode: str
 
 
-# doctor recommendations based on risk level
 DOCTOR_REC = {
     "green": (
         "Your indicators look healthy. Continue maintaining a balanced "
@@ -132,7 +131,6 @@ def get_risk(score):
         return "high", "red"
 
 
-# endpoints
 @app.get("/")
 def root():
     index_path = os.path.join(FRONTEND_DIR, "index.html")
@@ -239,7 +237,6 @@ def health_check():
 
 @app.get("/js/firebase-config.local.js")
 def firebase_local_config_js():
-    # Optional runtime config for hosted environments (e.g., Railway).
     config = {
         "apiKey": os.getenv("FIREBASE_API_KEY", ""),
         "authDomain": os.getenv("FIREBASE_AUTH_DOMAIN", ""),
@@ -249,7 +246,6 @@ def firebase_local_config_js():
         "appId": os.getenv("FIREBASE_APP_ID", ""),
     }
 
-    # Only emit runtime override if all fields are present.
     if all(config.values()):
         payload = "window.__WOMENLY_FIREBASE_CONFIG__ = " + json.dumps(config) + ";"
     else:
@@ -265,4 +261,8 @@ if os.path.isdir(FRONTEND_DIR):
 if __name__ == "__main__":
     import uvicorn
 
-    uvicorn.run("app:app", host="0.0.0.0", port=8000, reload=True)
+    port = int(os.environ.get("PORT", 8000))
+    is_dev = os.environ.get("ENV", "production").lower() == "development"
+    
+    print(f"Starting Womenly API on port {port} (Dev mode: {is_dev})")
+    uvicorn.run("app:app", host="0.0.0.0", port=port, reload=is_dev)

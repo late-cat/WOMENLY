@@ -170,7 +170,7 @@ hakathon-womenly/
 ├── backend/
 │   ├── app.py
 │   ├── requirements.txt
-│   └── model/
+│   └── model/ (Trained assets)
 │       ├── metrics.json
 │       ├── model_advanced.pkl
 │       └── model_basic.pkl
@@ -179,23 +179,10 @@ hakathon-womenly/
 │   └── train_model.py
 └── frontend/
     ├── index.html
-    ├── calculator.html
-    ├── screening.html
-    ├── results.html
-    ├── dashboard.html
-    ├── metrics.html
-    ├── login.html
-    ├── css/
-    │   └── style.css
-    ├── js/
-    │   ├── auth.js
-    │   ├── calculator.js
-    │   ├── config.js
-    │   ├── dashboard.js
-    │   ├── firebase-config.js
-    │   ├── metrics.js
-    │   └── screening.js
-    └── assets/
+    ├── ...
+    └── js/
+        ├── firebase-config.js (Injection-ready)
+        └── ...
 ```
 
 ## How the System Works
@@ -380,60 +367,21 @@ If you use a different frontend port or host, keep `frontend/js/config.js` align
 
 ## Firebase Setup
 
-The file below contains placeholder Firebase credentials:
+The app is ready for dynamic configuration. You can either:
 
-- `frontend/js/firebase-config.js`
+1.  **Direct Edit**: Replace `YOUR_API_KEY` in `frontend/js/firebase-config.js`.
+2.  **Injection**: Set `window.__WOMENLY_FIREBASE_CONFIG__` in a script tag before loading `firebase-config.js`.
 
-Replace the placeholder values with your Firebase project configuration:
+Without Firebase configuration, Google Login and the personal dashboard will not function.
 
-- `apiKey`
-- `authDomain`
-- `projectId`
-- `storageBucket`
-- `messagingSenderId`
-- `appId`
+## Deployment (Railway)
 
-Without Firebase configuration:
+The backend is optimized for Railway:
+- It automatically listens on the environment-provided `PORT`.
+- It mounts the `frontend` folder at the root `/`.
+- To enable hot-reload in development, set the environment variable `ENV=development`.
 
-- Login will not work
-- Dashboard data will not load
-- Saving results to profile will not work
-
-However, the following can still work locally:
-
-- Home page
-- Cycle calculator
-- PCOS screening
-- Results page
-- Metrics page, if backend is running
-
-## Important Files
-
-### Backend
-
-- `backend/app.py`: FastAPI server and prediction endpoints
-- `backend/model/train_model.py`: model training pipeline
-- `backend/model/metrics.json`: stored evaluation results
-- `backend/model/model_basic.pkl`: basic screening model
-- `backend/model/model_advanced.pkl`: advanced screening model
-
-### Frontend
-
-- `frontend/index.html`: landing page
-- `frontend/calculator.html`: cycle calculator UI
-- `frontend/screening.html`: dual-mode PCOS screening UI
-- `frontend/results.html`: prediction result rendering and save flow
-- `frontend/dashboard.html`: user dashboard
-- `frontend/metrics.html`: live model metrics visualization
-- `frontend/login.html`: Firebase auth page
-
-### JavaScript Logic
-
-- `frontend/js/config.js`: backend base URL
-- `frontend/js/auth.js`: auth form behavior
-- `frontend/js/dashboard.js`: dashboard rendering and trend logic
-- `frontend/js/metrics.js`: fetches and renders model metrics
-- `frontend/js/calculator.js`: cycle date calculations
+**Important**: Ensure `backend/model/` contains your trained `.pkl` and `.json` files before deploying, or run the training script as part of your build process.
 
 ## Sample Use Cases
 
