@@ -8,7 +8,7 @@ Produces two models:
 And metrics for both: metrics.json
 
 Usage:
-    cd backend/model
+    cd machine_learning
     python train_model.py
 """
 
