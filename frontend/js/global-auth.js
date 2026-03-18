@@ -25,7 +25,7 @@ auth.onAuthStateChanged(async function (user) {
   if (user) {
     if (loginLink) loginLink.parentElement.style.display = 'none';
     navUser.style.display = 'flex';
-    
+
     // Set user name
     const nameEl = document.getElementById('userName');
     if (nameEl) {
@@ -35,18 +35,18 @@ auth.onAuthStateChanged(async function (user) {
         nameEl.textContent = user.email || 'User';
         db.collection('users').doc(user.uid).get().then(doc => {
           if (doc.exists && doc.data().name) {
-             nameEl.textContent = doc.data().name;
+            nameEl.textContent = doc.data().name;
           }
-        }).catch(() => {});
+        }).catch(() => { });
       }
     }
   } else {
-    if (loginLink) loginLink.parentElement.style.display = 'inline-block';
+    if (loginLink) loginLink.parentElement.style.display = '';
     navUser.style.display = 'none';
   }
 });
 
-window.logOut = function() {
+window.logOut = function () {
   auth.signOut().then(function () {
     window.location.href = 'login.html';
   });
