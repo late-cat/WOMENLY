@@ -1,14 +1,12 @@
-// Firebase configuration — replace with your project keys
-const firebaseConfig = {
-  apiKey: "AIzaSyAfXtWDF6iOMVK373xdeE13RDgwZkg7wOE",
-  authDomain: "womenly-b0665.firebaseapp.com",
-  projectId: "womenly-b0665",
-  storageBucket: "womenly-b0665.firebasestorage.app",
-  messagingSenderId: "36557330231",
-  appId: "1:36557330231:web:00fba85eec2c9518302cb2"
+const firebaseConfig = window.__WOMENLY_FIREBASE_CONFIG__ || {
+  apiKey: "YOUR_API_KEY",
+  authDomain: "YOUR_PROJECT.firebaseapp.com",
+  projectId: "YOUR_PROJECT_ID",
+  storageBucket: "YOUR_PROJECT.appspot.com",
+  messagingSenderId: "YOUR_SENDER_ID",
+  appId: "YOUR_APP_ID"
 };
 
-// Initialize Firebase
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();

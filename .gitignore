@@ -1,6 +1,7 @@
 # Environments
 venv/
 .env
+frontend/js/firebase-config.local.js
 
 # Python caches
 __pycache__/
