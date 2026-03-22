@@ -30,18 +30,23 @@ function renderResult() {
   html += '<p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 4px;">Risk Score: <strong>' + score + '%</strong></p>';
   html += '<div class="risk-score-bar"><div class="risk-score-fill ' + color + '" style="width: ' + score + '%;"></div></div>';
 
-  // Doctor advice
+
+  html += '<div class="screening-disclaimer">';
+  html += r.screening_disclaimer || '⚠️ This result is a screening indicator only and is NOT a clinical diagnosis. Please consult a qualified healthcare professional.';
+  html += '</div>';
+
+
   html += '<div class="doctor-advice ' + color + '">';
   html += '<strong>Doctor Recommendation</strong><br>';
   html += r.doctor_recommendation || DOCTOR_ADVICE[color] || 'Please consult a doctor for a detailed evaluation.';
   html += '</div>';
 
-  // Symptom summary
+
   html += '<div style="text-align: left; margin-top: 20px;">';
   html += '<h4 style="font-size: 0.9rem; margin-bottom: 8px;">Your Inputs</h4>';
   html += '<table class="history-table"><tbody>';
   var friendlyNames = {
-    age: 'Age', bmi: 'BMI', cycle_length: 'Cycle Length', cycle_regularity: 'Cycle Regularity',
+    age: 'Age', bmi: 'BMI', period_duration: 'Period Duration', cycle_regularity: 'Cycle Regularity',
     weight_gain: 'Weight Gain', skin_darkening: 'Skin Darkening',
     hair_growth: 'Excess Hair Growth', hair_loss: 'Hair Loss', pimples: 'Pimples/Acne',
     exercise: 'Regular Exercise', fast_food: 'Fast Food (frequent)',
@@ -50,7 +55,7 @@ function renderResult() {
   };
   for (var key in input) {
     var val = input[key];
-    var display = (val === 1 ? 'Yes' : (val === 0 && key !== 'age' && key !== 'bmi' && key !== 'cycle_length' ? 'No' : val));
+    var display = (val === 1 ? 'Yes' : (val === 0 && key !== 'age' && key !== 'bmi' && key !== 'period_duration' ? 'No' : val));
     html += '<tr><td style="color: var(--text-light);">' + (friendlyNames[key] || key) + '</td><td><strong>' + display + '</strong></td></tr>';
   }
   html += '</tbody></table></div>';

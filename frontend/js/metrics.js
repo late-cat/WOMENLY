@@ -9,6 +9,16 @@ async function loadMetrics() {
     document.getElementById('metricRecall').textContent = (m.recall * 100).toFixed(1) + '%';
     document.getElementById('metricF1').textContent = (m.f1 * 100).toFixed(1) + '%';
 
+    var advancedMetrics = m.advanced || m;
+    if (advancedMetrics.roc_auc != null) {
+      document.getElementById('metricRocAuc').textContent = (advancedMetrics.roc_auc * 100).toFixed(1) + '%';
+    }
+    if (advancedMetrics.cv_roc_auc_mean != null) {
+      var cvMean = (advancedMetrics.cv_roc_auc_mean * 100).toFixed(1);
+      var cvStd = advancedMetrics.cv_roc_auc_std != null ? ' ±' + (advancedMetrics.cv_roc_auc_std * 100).toFixed(1) : '';
+      document.getElementById('metricCvRocAuc').textContent = cvMean + '%' + cvStd;
+    }
+
     if (m.confusion_matrix) {
       document.getElementById('cm_tn').textContent = m.confusion_matrix[0][0];
       document.getElementById('cm_fp').textContent = m.confusion_matrix[0][1];
@@ -57,6 +67,8 @@ async function loadMetrics() {
     document.getElementById('metricPrecision').textContent = msg;
     document.getElementById('metricRecall').textContent = msg;
     document.getElementById('metricF1').textContent = msg;
+    document.getElementById('metricRocAuc').textContent = msg;
+    document.getElementById('metricCvRocAuc').textContent = msg;
   }
 }
 
