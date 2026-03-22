@@ -53,6 +53,14 @@
         <div class="metric-value" id="metricF1">—</div>
         <div class="metric-label">F1 Score</div>
       </div>
+      <div class="metric-card">
+        <div class="metric-value" id="metricRocAuc">—</div>
+        <div class="metric-label">ROC-AUC</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-value" id="metricCvRocAuc">—</div>
+        <div class="metric-label">CV ROC-AUC (5-fold)</div>
+      </div>
     </div>
 
     <!-- Confusion Matrix -->
@@ -97,10 +105,11 @@
       <h3 class="section-title">About the Model</h3>
       <ul style="padding-left: 18px; line-height: 2;">
         <li><strong>Algorithm:</strong> Random Forest Classifier</li>
-        <li><strong>Library:</strong> scikit-learn</li>
+        <li><strong>Library:</strong> scikit-learn (Pipeline + SimpleImputer)</li>
         <li><strong>Dataset:</strong> PCOS dataset (user-provided)</li>
-        <li><strong>Training:</strong> 80/20 train-test split</li>
+        <li><strong>Training:</strong> 80/20 stratified train-test split + 5-fold cross-validation</li>
         <li><strong>Purpose:</strong> Screening indicator only — not a clinical diagnostic tool</li>
+        <li><strong>Note:</strong> This model exhibits unusually high accuracy (~99%). Results should be interpreted as indicative only. Always confirm PCOS with a qualified clinician.</li>
       </ul>
     </div>
   </div>
