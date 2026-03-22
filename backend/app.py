@@ -8,14 +8,13 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, Field
 import joblib
 import json
 import os
-import numpy as np
+import pandas as pd
 from dotenv import load_dotenv
 
-# Load environment variables from .env file if it exists
 load_dotenv()
 
 
@@ -76,31 +75,40 @@ def load_models():
         model_advanced = joblib.load(adv_path)
         with open(metrics_path) as f:
             metrics_data = json.load(f)
+
+        if metrics_data:
+            basic_expected = metrics_data.get("basic", {}).get("features", [])
+            adv_expected = metrics_data.get("advanced", {}).get("features", [])
+            if basic_expected:
+                print(f"Basic model expects features: {basic_expected}")
+            if adv_expected:
+                print(f"Advanced model expects features: {adv_expected}")
+
         print("All models and metrics loaded successfully.")
     except Exception as e:
         print(f"ERROR: Failed to load models: {e}")
 
 
 class BasicInput(BaseModel):
-    age: float
-    bmi: float
-    cycle_length: float
-    cycle_regularity: int = 0
-    weight_gain: int = 0
-    hair_growth: int = 0
-    skin_darkening: int = 0
-    hair_loss: int = 0
-    pimples: int = 0
-    fast_food: int = 0
-    exercise: int = 0
+    age: float = Field(..., ge=10, le=60, description="Age in years")
+    bmi: float = Field(..., ge=10, le=60, description="Body Mass Index")
+    period_duration: float = Field(..., ge=0, le=15, description="Average period duration in days")
+    cycle_regularity: int = Field(0, ge=0, le=1)
+    weight_gain: int = Field(0, ge=0, le=1)
+    hair_growth: int = Field(0, ge=0, le=1)
+    skin_darkening: int = Field(0, ge=0, le=1)
+    hair_loss: int = Field(0, ge=0, le=1)
+    pimples: int = Field(0, ge=0, le=1)
+    fast_food: int = Field(0, ge=0, le=1)
+    exercise: int = Field(0, ge=0, le=1)
 
 
 class AdvancedInput(BasicInput):
-    fsh: float
-    lh: float
-    amh: float
-    tsh: float
-    hemoglobin: float
+    fsh: float = Field(..., ge=0, le=200, description="FSH in mIU/mL")
+    lh: float = Field(..., ge=0, le=200, description="LH in mIU/mL")
+    amh: float = Field(..., ge=0, le=100, description="AMH in ng/mL")
+    tsh: float = Field(..., ge=0, le=50, description="TSH in mIU/L")
+    hemoglobin: float = Field(..., ge=4, le=20, description="Hemoglobin in g/dL")
 
 
 class PredictionResponse(BaseModel):
@@ -109,6 +117,15 @@ class PredictionResponse(BaseModel):
     tag_color: str
     doctor_recommendation: str
     mode: str
+    screening_disclaimer: str
+
+
+SCREENING_DISCLAIMER = (
+    "⚠️ This result is a screening indicator only and is NOT a clinical diagnosis. "
+    "PCOS can only be diagnosed by a qualified healthcare professional through "
+    "physical examination, ultrasound, and hormonal blood tests. "
+    "Please consult a doctor before drawing any medical conclusions."
+)
 
 
 DOCTOR_REC = {
@@ -149,23 +166,22 @@ def root():
 def predict_basic(data: BasicInput):
     if model_basic is None:
         raise HTTPException(503, "Basic model not loaded. Run train_model.py first.")
-    regularity = data.cycle_regularity
 
-    features = np.array(
+    features = pd.DataFrame(
         [
-            [
-                data.age,
-                data.bmi,
-                data.cycle_length,
-                regularity,
-                data.weight_gain,
-                data.hair_growth,
-                data.skin_darkening,
-                data.hair_loss,
-                data.pimples,
-                data.fast_food,
-                data.exercise,
-            ]
+            {
+                "age": data.age,
+                "bmi": data.bmi,
+                "period_duration": data.period_duration,
+                "cycle_regularity": data.cycle_regularity,
+                "weight_gain": data.weight_gain,
+                "hair_growth": data.hair_growth,
+                "skin_darkening": data.skin_darkening,
+                "hair_loss": data.hair_loss,
+                "pimples": data.pimples,
+                "fast_food": data.fast_food,
+                "exercise": data.exercise,
+            }
         ]
     )
 
@@ -179,6 +195,7 @@ def predict_basic(data: BasicInput):
         tag_color=color,
         doctor_recommendation=DOCTOR_REC[color],
         mode="basic",
+        screening_disclaimer=SCREENING_DISCLAIMER,
     )
 
 
@@ -187,28 +204,26 @@ def predict_advanced(data: AdvancedInput):
     if model_advanced is None:
         raise HTTPException(503, "Advanced model not loaded. Run train_model.py first.")
 
-    regularity = data.cycle_regularity
-
-    features = np.array(
+    features = pd.DataFrame(
         [
-            [
-                data.age,
-                data.bmi,
-                data.cycle_length,
-                regularity,
-                data.weight_gain,
-                data.hair_growth,
-                data.skin_darkening,
-                data.hair_loss,
-                data.pimples,
-                data.fast_food,
-                data.exercise,
-                data.fsh,
-                data.lh,
-                data.amh,
-                data.tsh,
-                data.hemoglobin,
-            ]
+            {
+                "age": data.age,
+                "bmi": data.bmi,
+                "period_duration": data.period_duration,
+                "cycle_regularity": data.cycle_regularity,
+                "weight_gain": data.weight_gain,
+                "hair_growth": data.hair_growth,
+                "skin_darkening": data.skin_darkening,
+                "hair_loss": data.hair_loss,
+                "pimples": data.pimples,
+                "fast_food": data.fast_food,
+                "exercise": data.exercise,
+                "fsh": data.fsh,
+                "lh": data.lh,
+                "amh": data.amh,
+                "tsh": data.tsh,
+                "hemoglobin": data.hemoglobin,
+            }
         ]
     )
 
@@ -222,6 +237,7 @@ def predict_advanced(data: AdvancedInput):
         tag_color=color,
         doctor_recommendation=DOCTOR_REC[color],
         mode="advanced",
+        screening_disclaimer=SCREENING_DISCLAIMER,
     )
 
 
@@ -256,7 +272,6 @@ def firebase_local_config_js():
         payload = "window.__WOMENLY_FIREBASE_CONFIG__ = " + json.dumps(config) + ";"
         return Response(content=payload, media_type="application/javascript")
     
-    # Fallback: Serve the physical static file if it exists (useful for local development)
     local_file_path = os.path.join(FRONTEND_DIR, "js", "firebase-config.local.js")
     if os.path.exists(local_file_path):
         return FileResponse(local_file_path)
