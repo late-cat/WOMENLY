@@ -19,7 +19,7 @@ Womenly acts as an early awareness and risk screening tool, not a substitute for
 ## Team and Links
 
 - Team Name: Vision-X
-- Live Deployment: https://hakathon-womenly.onrender.com
+- Live Deployment: https://womenly.onrender.com
 - GitHub Repository: https://github.com/late-cat/WOMENLY
 - Demo Video: https://youtu.be/YyfKNt77TY0?si=WNU-0oNR69EiTheQ
 - Presentation (PPT/PDF): https://drive.google.com/drive/folders/1TZXSImqsdWX8mO5zU1vXZxDJz6mdem_Y?usp=sharing
@@ -287,7 +287,7 @@ Womenly is configured for easy deployment on Render using the included `render.y
 - **Static Hosting**: The static frontend is automatically mounted by FastAPI at the root (`/`).
 - **Cold Starts**: On Render's free tier, the first request after inactivity may take ~50 seconds to wake up the service.
 
-Live URL: https://hakathon-womenly.onrender.com
+Live URL: https://womenly.onrender.com
 
 ## Limitations
 
