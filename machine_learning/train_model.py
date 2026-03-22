@@ -10,6 +10,11 @@ And metrics for both: metrics.json
 Usage:
     cd machine_learning
     python train_model.py
+
+Dataset note: This dataset exhibits unusually high classification performance
+(~99% accuracy).  Results should be interpreted as indicative only.
+Cross-validation ROC-AUC is included in metrics to provide a more robust
+estimate of generalisation.
 """
 
 import pandas as pd
@@ -17,14 +22,17 @@ import numpy as np
 import json
 import joblib
 import os
-from sklearn.model_selection import train_test_split
+from sklearn.model_selection import train_test_split, StratifiedKFold, cross_val_score
 from sklearn.ensemble import RandomForestClassifier
+from sklearn.impute import SimpleImputer
+from sklearn.pipeline import Pipeline
 from sklearn.metrics import (
     accuracy_score,
     precision_score,
     recall_score,
     f1_score,
     confusion_matrix,
+    roc_auc_score,
 )
 
 SCRIPT_DIR = os.path.dirname(os.path.abspath(__file__))
@@ -88,7 +96,10 @@ def load_data():
     ]
     for col in yn_cols:
         if col in df.columns:
-            df[col] = pd.to_numeric(df[col], errors="coerce").fillna(0).astype(int)
+            # Convert to numeric only; NaN will be imputed later on training
+            # data so that no information from the test set leaks into the
+            # imputation step.
+            df[col] = pd.to_numeric(df[col], errors="coerce")
 
     if "cycle_regularity" in df.columns:
         df["cycle_regularity"] = df["cycle_regularity"].apply(
@@ -123,7 +134,7 @@ def train_model(df, feature_cols, model_name):
     print(f"Features: {len(feature_cols)}")
     print(f"{'='*50}")
 
-    data = df[feature_cols + ["target"]].dropna()
+    data = df[feature_cols + ["target"]].copy()
     X = data[feature_cols].astype(float)
     y = data["target"].astype(int)
 
@@ -132,32 +143,55 @@ def train_model(df, feature_cols, model_name):
     )
     print(f"Train: {len(X_train)}, Test: {len(X_test)}")
 
-    model = RandomForestClassifier(
-        n_estimators=100, max_depth=12, random_state=42, n_jobs=-1
+    # Pipeline ensures the imputer is fitted ONLY on training data,
+    # preventing any leakage of test-set statistics.
+    pipeline = Pipeline(
+        [
+            ("imputer", SimpleImputer(strategy="median")),
+            (
+                "classifier",
+                RandomForestClassifier(
+                    n_estimators=100, max_depth=12, random_state=42, n_jobs=-1
+                ),
+            ),
+        ]
     )
-    model.fit(X_train, y_train)
+    pipeline.fit(X_train, y_train)
 
-    y_pred = model.predict(X_test)
+    y_pred = pipeline.predict(X_test)
+    y_proba = pipeline.predict_proba(X_test)[:, 1]
+
     acc = accuracy_score(y_test, y_pred)
     prec = precision_score(y_test, y_pred, zero_division=0)
     rec = recall_score(y_test, y_pred, zero_division=0)
     f1 = f1_score(y_test, y_pred, zero_division=0)
+    auc = roc_auc_score(y_test, y_proba)
     cm = confusion_matrix(y_test, y_pred).tolist()
 
-    importances = dict(zip(feature_cols, model.feature_importances_.tolist()))
+    # 5-fold stratified cross-validation for a more robust performance estimate.
+    cv = StratifiedKFold(n_splits=5, shuffle=True, random_state=42)
+    cv_auc_scores = cross_val_score(pipeline, X, y, cv=cv, scoring="roc_auc")
+    cv_roc_auc_mean = float(cv_auc_scores.mean())
+    cv_roc_auc_std = float(cv_auc_scores.std())
+
+    # Retrieve the imputer medians (fitted on X_train only) for use at
+    # inference time when a user field is missing.
+    imputer = pipeline.named_steps["imputer"]
+    medians = dict(zip(feature_cols, imputer.statistics_.tolist()))
+
+    rf = pipeline.named_steps["classifier"]
+    importances = dict(zip(feature_cols, rf.feature_importances_.tolist()))
 
     print(f"Accuracy:  {acc:.4f}")
     print(f"Precision: {prec:.4f}")
     print(f"Recall:    {rec:.4f}")
     print(f"F1 Score:  {f1:.4f}")
+    print(f"ROC-AUC:   {auc:.4f}")
+    print(f"CV ROC-AUC: {cv_roc_auc_mean:.4f} ± {cv_roc_auc_std:.4f}")
     print(f"Confusion Matrix: {cm}")
 
-    medians = {}
-    for col in feature_cols:
-        medians[col] = float(X_train[col].median())
-
     model_path = os.path.join(DIR, f"{model_name}.pkl")
-    joblib.dump(model, model_path)
+    joblib.dump(pipeline, model_path)
     print(f"Saved: {model_path}")
 
     return {
@@ -165,10 +199,13 @@ def train_model(df, feature_cols, model_name):
         "precision": round(prec, 4),
         "recall": round(rec, 4),
         "f1": round(f1, 4),
+        "roc_auc": round(auc, 4),
+        "cv_roc_auc_mean": round(cv_roc_auc_mean, 4),
+        "cv_roc_auc_std": round(cv_roc_auc_std, 4),
         "confusion_matrix": cm,
         "feature_importance": {k: round(v, 4) for k, v in importances.items()},
         "features": feature_cols,
-        "medians": medians,
+        "medians": {k: round(v, 4) for k, v in medians.items()},
         "train_samples": len(X_train),
         "test_samples": len(X_test),
     }

@@ -153,8 +153,8 @@ Pipeline responsibilities:
 - Read and clean dataset
 - Normalize feature names
 - Build two feature sets (basic and advanced)
-- Train two RandomForestClassifier models
-- Evaluate with accuracy, precision, recall, F1, and confusion matrix
+- Train two RandomForestClassifier models wrapped in sklearn `Pipeline` (with `SimpleImputer` fitted only on training data to prevent data leakage)
+- Evaluate with accuracy, precision, recall, F1, ROC-AUC, and 5-fold cross-validation ROC-AUC
 - Save model artifacts and metrics into backend/model
 
 ## Current Model Snapshot
@@ -164,13 +164,17 @@ From backend/model/metrics.json:
 - Basic model:
 	- Accuracy: 99.00%
 	- F1: 98.39%
+	- ROC-AUC: 99.82%
+	- CV ROC-AUC (5-fold): 99.66% ± 0.24%
 - Advanced model:
 	- Accuracy: 99.25%
-	- Precision: 99.17%
-	- Recall: 98.36%
-	- F1: 98.77%
+	- Precision: 97.60%
+	- Recall: 100.00%
+	- F1: 98.79%
+	- ROC-AUC: 99.86%
+	- CV ROC-AUC (5-fold): 99.88% ± 0.12%
 
-Note: these metrics are from the included training artifact and may vary if retrained with updated data.
+Note: these metrics are from the included training artifact and may vary if retrained with updated data. The high accuracy is a characteristic of this dataset and should be interpreted as indicative only.
 
 ## Tech Stack
 

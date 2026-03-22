@@ -30,6 +30,11 @@ function renderResult() {
   html += '<p style="font-size: 0.85rem; color: var(--text-light); margin-bottom: 4px;">Risk Score: <strong>' + score + '%</strong></p>';
   html += '<div class="risk-score-bar"><div class="risk-score-fill ' + color + '" style="width: ' + score + '%;"></div></div>';
 
+  // Disclaimer
+  html += '<div class="screening-disclaimer">';
+  html += r.screening_disclaimer || '⚠️ This result is a screening indicator only and is NOT a clinical diagnosis. Please consult a qualified healthcare professional.';
+  html += '</div>';
+
   // Doctor advice
   html += '<div class="doctor-advice ' + color + '">';
   html += '<strong>Doctor Recommendation</strong><br>';

@@ -8,11 +8,11 @@ from fastapi import FastAPI, HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from fastapi.responses import FileResponse, Response
 from fastapi.staticfiles import StaticFiles
-from pydantic import BaseModel
+from pydantic import BaseModel, field_validator
 import joblib
 import json
 import os
-import numpy as np
+import pandas as pd
 from dotenv import load_dotenv
 
 # Load environment variables from .env file if it exists
@@ -81,6 +81,14 @@ def load_models():
         print(f"ERROR: Failed to load models: {e}")
 
 
+SCREENING_DISCLAIMER = (
+    "⚠️ This result is a screening indicator only and is NOT a clinical diagnosis. "
+    "PCOS can only be diagnosed by a qualified healthcare professional through "
+    "physical examination, ultrasound, and hormonal blood tests. "
+    "Please consult a doctor before drawing any medical conclusions."
+)
+
+
 class BasicInput(BaseModel):
     age: float
     bmi: float
@@ -94,6 +102,35 @@ class BasicInput(BaseModel):
     fast_food: int = 0
     exercise: int = 0
 
+    @field_validator("age")
+    @classmethod
+    def validate_age(cls, v):
+        if not (10 <= v <= 60):
+            raise ValueError("age must be between 10 and 60 years")
+        return v
+
+    @field_validator("bmi")
+    @classmethod
+    def validate_bmi(cls, v):
+        if not (10.0 <= v <= 70.0):
+            raise ValueError("bmi must be between 10 and 70 kg/m²")
+        return v
+
+    @field_validator("cycle_length")
+    @classmethod
+    def validate_cycle_length(cls, v):
+        if not (1 <= v <= 15):
+            raise ValueError("cycle_length (period duration) must be between 1 and 15 days")
+        return v
+
+    @field_validator("cycle_regularity", "weight_gain", "hair_growth", "skin_darkening",
+                     "hair_loss", "pimples", "fast_food", "exercise")
+    @classmethod
+    def validate_binary(cls, v):
+        if v not in (0, 1):
+            raise ValueError("binary fields must be 0 or 1")
+        return v
+
 
 class AdvancedInput(BasicInput):
     fsh: float
@@ -102,6 +139,41 @@ class AdvancedInput(BasicInput):
     tsh: float
     hemoglobin: float
 
+    @field_validator("fsh")
+    @classmethod
+    def validate_fsh(cls, v):
+        if not (0.1 <= v <= 100.0):
+            raise ValueError("fsh must be between 0.1 and 100 mIU/mL")
+        return v
+
+    @field_validator("lh")
+    @classmethod
+    def validate_lh(cls, v):
+        if not (0.1 <= v <= 100.0):
+            raise ValueError("lh must be between 0.1 and 100 mIU/mL")
+        return v
+
+    @field_validator("amh")
+    @classmethod
+    def validate_amh(cls, v):
+        if not (0.01 <= v <= 50.0):
+            raise ValueError("amh must be between 0.01 and 50 ng/mL")
+        return v
+
+    @field_validator("tsh")
+    @classmethod
+    def validate_tsh(cls, v):
+        if not (0.01 <= v <= 50.0):
+            raise ValueError("tsh must be between 0.01 and 50 mIU/L")
+        return v
+
+    @field_validator("hemoglobin")
+    @classmethod
+    def validate_hemoglobin(cls, v):
+        if not (3.0 <= v <= 25.0):
+            raise ValueError("hemoglobin must be between 3 and 25 g/dL")
+        return v
+
 
 class PredictionResponse(BaseModel):
     risk_level: str
@@ -109,6 +181,7 @@ class PredictionResponse(BaseModel):
     tag_color: str
     doctor_recommendation: str
     mode: str
+    screening_disclaimer: str
 
 
 DOCTOR_REC = {
@@ -149,23 +222,22 @@ def root():
 def predict_basic(data: BasicInput):
     if model_basic is None:
         raise HTTPException(503, "Basic model not loaded. Run train_model.py first.")
-    regularity = data.cycle_regularity
 
-    features = np.array(
+    features = pd.DataFrame(
         [
-            [
-                data.age,
-                data.bmi,
-                data.cycle_length,
-                regularity,
-                data.weight_gain,
-                data.hair_growth,
-                data.skin_darkening,
-                data.hair_loss,
-                data.pimples,
-                data.fast_food,
-                data.exercise,
-            ]
+            {
+                "age": data.age,
+                "bmi": data.bmi,
+                "cycle_length": data.cycle_length,
+                "cycle_regularity": data.cycle_regularity,
+                "weight_gain": data.weight_gain,
+                "hair_growth": data.hair_growth,
+                "skin_darkening": data.skin_darkening,
+                "hair_loss": data.hair_loss,
+                "pimples": data.pimples,
+                "fast_food": data.fast_food,
+                "exercise": data.exercise,
+            }
         ]
     )
 
@@ -179,6 +251,7 @@ def predict_basic(data: BasicInput):
         tag_color=color,
         doctor_recommendation=DOCTOR_REC[color],
         mode="basic",
+        screening_disclaimer=SCREENING_DISCLAIMER,
     )
 
 
@@ -187,28 +260,26 @@ def predict_advanced(data: AdvancedInput):
     if model_advanced is None:
         raise HTTPException(503, "Advanced model not loaded. Run train_model.py first.")
 
-    regularity = data.cycle_regularity
-
-    features = np.array(
+    features = pd.DataFrame(
         [
-            [
-                data.age,
-                data.bmi,
-                data.cycle_length,
-                regularity,
-                data.weight_gain,
-                data.hair_growth,
-                data.skin_darkening,
-                data.hair_loss,
-                data.pimples,
-                data.fast_food,
-                data.exercise,
-                data.fsh,
-                data.lh,
-                data.amh,
-                data.tsh,
-                data.hemoglobin,
-            ]
+            {
+                "age": data.age,
+                "bmi": data.bmi,
+                "cycle_length": data.cycle_length,
+                "cycle_regularity": data.cycle_regularity,
+                "weight_gain": data.weight_gain,
+                "hair_growth": data.hair_growth,
+                "skin_darkening": data.skin_darkening,
+                "hair_loss": data.hair_loss,
+                "pimples": data.pimples,
+                "fast_food": data.fast_food,
+                "exercise": data.exercise,
+                "fsh": data.fsh,
+                "lh": data.lh,
+                "amh": data.amh,
+                "tsh": data.tsh,
+                "hemoglobin": data.hemoglobin,
+            }
         ]
     )
 
@@ -222,6 +293,7 @@ def predict_advanced(data: AdvancedInput):
         tag_color=color,
         doctor_recommendation=DOCTOR_REC[color],
         mode="advanced",
+        screening_disclaimer=SCREENING_DISCLAIMER,
     )
 
 
