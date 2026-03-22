@@ -38,8 +38,14 @@ body {
     color: var(--text);
     min-height: 100vh;
     line-height: 1.6;
+    overflow-x: hidden;
+    width: 100%;
 }
 
+html {
+    overflow-x: hidden;
+    width: 100%;
+}
 
 .table-responsive {
     width: 100%;
@@ -230,6 +236,8 @@ body {
     border-radius: var(--radius);
     padding: 24px;
     box-shadow: var(--shadow);
+    max-width: 100%;
+    overflow: hidden;
 }
 
 .card-grid {
@@ -502,6 +510,8 @@ body {
 .history-table {
     width: 100%;
     border-collapse: collapse;
+    margin-top: 10px;
+    min-width: 500px;
     font-size: 0.85rem;
 }
 
