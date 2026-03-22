@@ -41,6 +41,13 @@ body {
 }
 
 
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 20px;
+}
+
 .container {
     max-width: 960px;
     margin: 0 auto;
@@ -517,7 +524,7 @@ body {
 
 .metric-grid {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+    grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
     gap: 12px;
     margin: 16px 0;
 }
@@ -741,6 +748,23 @@ body {
 
     .page-header h1 {
         font-size: 1.3rem;
+    }
+
+    .card, .feature-card {
+        padding: 20px 16px;
+    }
+
+    .auth-card {
+        padding: 24px 20px;
+    }
+
+    .metric-card .metric-value {
+        font-size: 1.3rem;
+    }
+
+    .big-tag {
+        font-size: 1.2rem;
+        padding: 12px 20px;
     }
 }
 

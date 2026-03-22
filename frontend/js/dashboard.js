@@ -61,7 +61,7 @@ auth.onAuthStateChanged(async function (user) {
   if (records.length === 0) return;
 
   // Render records table
-  var html = '<table class="history-table">';
+  var html = '<div class="table-responsive"><table class="history-table">';
   html += '<thead><tr><th>Month</th><th>Risk Score</th><th>Tag</th><th>Doctor Advice</th></tr></thead><tbody>';
 
   records.forEach(function (r) {
@@ -74,7 +74,7 @@ auth.onAuthStateChanged(async function (user) {
     html += '<td style="font-size: 0.8rem; max-width: 200px;">' + (r.result.doctor_recommendation || '') + '</td>';
     html += '</tr>';
   });
-  html += '</tbody></table>';
+  html += '</tbody></table></div>';
   document.getElementById('recordsList').innerHTML = html;
 
   // Profile-level tag (pattern recognition)

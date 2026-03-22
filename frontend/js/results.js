@@ -44,6 +44,7 @@ function renderResult() {
 
   html += '<div style="text-align: left; margin-top: 20px;">';
   html += '<h4 style="font-size: 0.9rem; margin-bottom: 8px;">Your Inputs</h4>';
+  html += '<div class="table-responsive">';
   html += '<table class="history-table"><tbody>';
   var friendlyNames = {
     age: 'Age', bmi: 'BMI', period_duration: 'Period Duration', cycle_regularity: 'Cycle Regularity',
