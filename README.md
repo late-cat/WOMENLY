@@ -150,11 +150,13 @@ Training script: machine_learning/train_model.py
 
 Pipeline responsibilities:
 
-- Read and clean dataset
+- Read and clean dataset (augmented from Kaggle PCOS dataset, 2,000 samples)
 - Normalize feature names
 - Build two feature sets (basic and advanced)
+- Clip physiologically extreme outlier values
+- Apply preprocessing after train-test split (avoids data leakage)
 - Train two RandomForestClassifier models
-- Evaluate with accuracy, precision, recall, F1, and confusion matrix
+- Evaluate with accuracy, precision, recall, F1, confusion matrix, and 5-fold cross-validation
 - Save model artifacts and metrics into backend/model
 
 ## Current Model Snapshot
@@ -170,7 +172,7 @@ From backend/model/metrics.json:
 	- Recall: 98.36%
 	- F1: 98.77%
 
-Note: these metrics are from the included training artifact and may vary if retrained with updated data.
+Note: Trained on an augmented version of a Kaggle PCOS dataset (2,000 samples). Metrics may vary if retrained with updated data.
 
 ## Tech Stack
 

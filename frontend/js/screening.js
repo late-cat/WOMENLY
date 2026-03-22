@@ -39,7 +39,7 @@ async function submitScreening() {
   var data = {
     age: parseFloat(document.getElementById('age').value),
     bmi: bmi,
-    cycle_length: parseFloat(document.getElementById('cycle_length').value),
+    period_duration: parseFloat(document.getElementById('period_duration').value),
     cycle_regularity: getToggleValue('cycle_regularity'),
     weight_gain: getToggleValue('weight_gain'),
     hair_growth: getToggleValue('hair_growth'),
